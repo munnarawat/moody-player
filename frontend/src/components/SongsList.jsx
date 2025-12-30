@@ -1,28 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaPlay } from "react-icons/fa";
 import { CiFaceSmile } from "react-icons/ci";
 import { FaUser } from "react-icons/fa";
-const SongsList = () => {
-  const songs = [
-    { id: 1, title: "Happy Song", artist: "Joyful Beats", mood: "happy" },
-    { id: 2, title: "Sad Melody", artist: "Blue Tunes", mood: "sad" },
-    { id: 3, title: "Angry Anthem", artist: "Fury Rhythms", mood: "angry" },
-    {
-      id: 4,
-      title: "Surprised Symphony",
-      artist: "Shock Waves",
-      mood: "surprised",
-    },
-    {
-      id: 5,
-      title: "Neutral Notes",
-      artist: "Calm Collective",
-      mood: "neutral",
-    },
-  ];
+const SongsList = ({songs=[]}) => {
   return (
     <div className="mt-6 p-4 md:px-10 flex gap-4 overflow-x-auto overflow-y-hidden shrink-0">
-      {songs.map((item, index) => (
+      { songs.length !== 0 ? 
+       songs.map((item, index) => (
         <div key={index} className="cards shrink-0 w-48 flex  flex-col justify-between   p-3 h-72   bg-white/20 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg">
           <div className="image-container  relative w-full h-32 rounded-xl ">
             <img
@@ -52,7 +36,7 @@ const SongsList = () => {
             </span>
           </div>
         </div>
-      ))}
+      )):"Waiting for detected mood🤠" }
     </div>
   );
 };

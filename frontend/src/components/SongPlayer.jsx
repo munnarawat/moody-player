@@ -4,6 +4,7 @@ import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { FaPlay, FaPause } from "react-icons/fa";
 
 const SongPlayer = ({ songs }) => {
+  // State variables
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [trackProgress, setTrackProgress] = useState(0);
@@ -12,13 +13,13 @@ const SongPlayer = ({ songs }) => {
   const audioRef = useRef(null);
   const intervalRef = useRef();
 
-  // Helper: Convert seconds to MM:SS format
   const formatTime = (seconds) => {
     if (!seconds) return "00:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
   };
+
   // Check if songs data is available
   const currentSong =
     songs && songs.length > 0 ? songs[currentSongIndex] : null;
@@ -40,9 +41,9 @@ const SongPlayer = ({ songs }) => {
     if (currentSongIndex < songs.length - 1) {
       setCurrentSongIndex((prev) => prev + 1);
     } else {
-      setCurrentSongIndex(0);
+      setCurrentSongIndex(0); // Loop back to start
     }
-    setIsPlaying(false);
+    setIsPlaying(true);
   };
 
   // Handle Previous Song
@@ -52,7 +53,7 @@ const SongPlayer = ({ songs }) => {
     } else {
       setCurrentSongIndex(songs.length - 1); // Loop to end
     }
-    setIsPlaying(false);
+    setIsPlaying(true);
   };
 
   // Handle Progress Bar Drag
@@ -82,6 +83,14 @@ const SongPlayer = ({ songs }) => {
     }, 1000);
   };
 
+  // autoplay song when user mood detected
+  useEffect(()=>{
+    if(songs && songs.length>0){
+      setCurrentSongIndex(0);
+      setIsPlaying(true)
+    }
+  },[songs])
+  // Effect: Reset player when song changes
   useEffect(() => {
     if (currentSong && audioRef.current) {
       audioRef.current.pause();
@@ -92,7 +101,7 @@ const SongPlayer = ({ songs }) => {
         audioRef.current.play().catch((e) => console.log("Play error:", e));
       }
     }
-  }, [currentSongIndex, songs]);
+  }, [currentSongIndex, songs ]);
 
   // Effect: Set duration when metadata loads
   const onLoadedMetadata = () => {
@@ -117,15 +126,12 @@ const SongPlayer = ({ songs }) => {
 
   return (
     <div className="w-full flex items-center justify-center p-4">
-      {/* Hidden Audio Element */}
       <audio
         ref={audioRef}
-        src={currentSong.audio} property
+        src={currentSong.audio}
         onLoadedMetadata={onLoadedMetadata}
       />
-
       <div className="player w-full md:w-[700px] p-5 bg-zinc-800/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Left Side: Image & Info */}
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="image-container w-20 h-20 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 flex-shrink-0">
             <img

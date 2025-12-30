@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "@vladmandic/face-api";
-import SongsList from "./SongsList";
+import axios from "axios";
 
-const FaceExpression = () => {
+const FaceExpression = ({ setSongs }) => {
   const videoRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [expression, setExpression] = useState("Initializing...");
   const [isDetecting, setIsDetecting] = useState(false);
+
   // 1. Load Models
   useEffect(() => {
     const loadModels = async () => {
@@ -18,6 +19,7 @@ const FaceExpression = () => {
         ]);
         setLoaded(true);
         console.log("✅ Models loaded successfully");
+        setExpression("Ready to Detect");
       } catch (err) {
         console.error("❌ Model Load Error:", err);
         setExpression("Model Error!");
@@ -47,7 +49,6 @@ const FaceExpression = () => {
     };
   }, [loaded]);
 
-  // 3. Detection Loop (Correct Logic)
   useEffect(() => {
     let interval;
 
@@ -61,6 +62,7 @@ const FaceExpression = () => {
           return;
 
         try {
+          // Face Detect karo
           const detection = await faceapi
             .detectSingleFace(
               videoRef.current,
@@ -74,17 +76,32 @@ const FaceExpression = () => {
           if (detection) {
             const exp = detection.expressions;
             const best = Object.entries(exp).sort((a, b) => b[1] - a[1])[0];
+            const currentMood = best[0].toLowerCase();
+
+            // 1. UI Update karo
             setExpression(
-              `${best[0].toUpperCase()} (${(best[1] * 100).toFixed(0)}%)`
+              `${currentMood.toUpperCase()} (${(best[1] * 100).toFixed(0)}%)`
             );
+            setIsDetecting(false);
+
+            console.log("✅ Mood Detected:", currentMood);
+            try {
+              const res = await axios.get(
+                `http://localhost:3000/api/songs?mood=${currentMood}`
+              );
+              if (setSongs) {
+                setSongs(res.data);
+              }
+            } catch (apiError) {
+              console.error("❌ API Call Failed:", apiError);
+            }
           } else {
-            setExpression("No Face Detected 😐");
+            setExpression("Looking for face... 😐");
           }
         } catch (error) {
-          console.log(error);
+          console.log("Detection Loop Error:", error);
         }
       };
-
       interval = setInterval(() => {
         if (videoRef.current?.readyState === 4) {
           detectExpression();
@@ -92,16 +109,20 @@ const FaceExpression = () => {
       }, 1000);
     }
 
+    // Cleanup interval
     return () => {
       if (interval) {
         clearInterval(interval);
       }
     };
-  }, [isDetecting, loaded]);
+  }, [isDetecting, loaded, setSongs]);
 
   // 4. Toggle Handler
   const toggleDetection = () => {
     setIsDetecting(!isDetecting);
+    if (!isDetecting) {
+      setExpression("Scanning...");
+    }
   };
 
   return (
@@ -135,8 +156,8 @@ const FaceExpression = () => {
             <div className="heading text-center md:text-start">
               <h2 className="text-xl font-semibold">Live Mood Detection</h2>
               <p className=" mt-2 md:w-1/2">
-                Your current mood is being analyzed in real-time. Enjoy the music
-              tailored to your feelings.
+                Your current mood is being analyzed in real-time. Enjoy the
+                music tailored to your feelings.
               </p>
             </div>
             {/* Button */}
@@ -147,13 +168,11 @@ const FaceExpression = () => {
                   ? "bg-red-500 shadow-red-500/50 hover:shadow-red-500/70" // Stop Style
                   : "bg-gradient-to-r from-[#5F1FDB] via-[#7B3FE4] to-[#9760ED] shadow-[#5F1FDB]/50 hover:shadow-[#5F1FDB]/70" // Start Style
               }`}>
-              {isDetecting ? "Stop Listening" : "Start Listening"}
+              {isDetecting ? "Stop Scanning" : "Scan Mood & Get Songs"}
             </button>
           </div>
         </div>
       </div>
-      {/* songs list */}
-      <SongsList/>
     </div>
   );
 };
