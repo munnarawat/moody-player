@@ -31,7 +31,7 @@ const registerController = async (req, res) => {
     password: hasPassword,
   });
 
-  const token = await jwt.sign(
+  const token = jwt.sign(
     { id: user._id, userName: user.userName, email: user.email },
     process.env.JWT_SECRET_KEY,
     { expiresIn: "1d" }
@@ -43,16 +43,66 @@ const registerController = async (req, res) => {
   });
 
   res.status(201).json({
-    message:"user register successfully 🎉🎉",
+    message: "user register successfully 🎉🎉",
+    user: {
+        id:user._id,
+        userName:user.userName,
+        email:user.email,
+        fullName:user.fullName
+    },
+  });
+};
+
+const loginController = async (req, res) => {
+  const { userName, email, password } = req.body;
+
+  const user = await userModel
+    .findOne({
+      $or: [{ userName, email }],
+    })
+    .select("+password");
+
+  if (!user) {
+    return res.status(401).json({
+      message: "Invalid userName and email😖❌",
+    });
+  }
+
+  const isValidPassword = bcryptJs.compare(password, user.password);
+
+  if (!isValidPassword) {
+    return res.status(401).json({
+      message: "invalid password ❌",
+    });
+  }
+  const token = jwt.sign(
+    {
+      id: user._id,
+      userName: user.userName,
+      email: user.email,
+    },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "1d" }
+  );
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000, //1 day
+  });
+
+  res.status(200).json({
+    message:"user LoggedIn successfully 🎉🤩",
     user:{
-        userName,
-        email,
-        firstName,
-        lastName
+        id:user._id,
+        userName:user.userName,
+        email:user.email,
+        fullName:user.fullName
     }
   })
 };
 
 module.exports = {
   registerController,
+  loginController,
 };
