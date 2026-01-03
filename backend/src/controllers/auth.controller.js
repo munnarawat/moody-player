@@ -45,10 +45,10 @@ const registerController = async (req, res) => {
   res.status(201).json({
     message: "user register successfully 🎉🎉",
     user: {
-        id:user._id,
-        userName:user.userName,
-        email:user.email,
-        fullName:user.fullName
+      id: user._id,
+      userName: user.userName,
+      email: user.email,
+      fullName: user.fullName,
     },
   });
 };
@@ -92,17 +92,41 @@ const loginController = async (req, res) => {
   });
 
   res.status(200).json({
-    message:"user LoggedIn successfully 🎉🤩",
-    user:{
-        id:user._id,
-        userName:user.userName,
-        email:user.email,
-        fullName:user.fullName
-    }
-  })
+    message: "user LoggedIn successfully 🎉🤩",
+    user: {
+      id: user._id,
+      userName: user.userName,
+      email: user.email,
+      fullName: user.fullName,
+    },
+  });
+};
+
+const getCurrentUser = async (req, res) => {
+  res.status(200).json({
+    message: "current user fetched successfully 🎉",
+    user: req.user,
+  });
+};
+const logOutUserController = async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    res.status(400).json({
+      message: "User is not logged in ❌",
+    });
+  }
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+  });
+  res.status(200).json({
+    message: "user logged out successfully 🎉",
+  });
 };
 
 module.exports = {
   registerController,
   loginController,
+  getCurrentUser,
+  logOutUserController
 };
