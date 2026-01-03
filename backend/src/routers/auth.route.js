@@ -3,10 +3,11 @@ const  authControllers = require("../controllers/auth.controller")
 
 const route = express.Router();
 
-// call register  api 
-
+// create  register  api 
 route.post("/register",authControllers.registerController);
 
+// create login api
+route.post("/login", authControllers.loginController)
 
 
 
