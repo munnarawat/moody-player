@@ -11,7 +11,7 @@ const registerController = async (req, res) => {
   } = req.body;
 
   const userExits = await userModel.findOne({
-    $or: [{ userName, email }],
+    $or: [{ userName }, { email }],
   });
   if (userExits) {
     return res.status(400).json({
@@ -31,14 +31,13 @@ const registerController = async (req, res) => {
     password: hasPassword,
   });
 
-  const token = jwt.sign(
-    { id: user._id, userName: user.userName, email: user.email },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: "1d" }
-  );
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1d",
+  });
   res.cookie("token", token, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000, //1 day
   });
 
@@ -58,7 +57,7 @@ const loginController = async (req, res) => {
 
   const user = await userModel
     .findOne({
-      $or: [{ userName, email }],
+      $or: [{ userName }, { email }],
     })
     .select("+password");
 
@@ -68,7 +67,7 @@ const loginController = async (req, res) => {
     });
   }
 
-  const isValidPassword = bcryptJs.compare(password, user.password);
+  const isValidPassword = await bcryptJs.compare(password, user.password);
 
   if (!isValidPassword) {
     return res.status(401).json({
@@ -78,8 +77,6 @@ const loginController = async (req, res) => {
   const token = jwt.sign(
     {
       id: user._id,
-      userName: user.userName,
-      email: user.email,
     },
     process.env.JWT_SECRET_KEY,
     { expiresIn: "1d" }
@@ -87,7 +84,8 @@ const loginController = async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: 24 * 60 * 60 * 1000, //1 day
   });
 
@@ -117,7 +115,8 @@ const logOutUserController = async (req, res) => {
   }
   res.clearCookie("token", {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
   });
   res.status(200).json({
     message: "user logged out successfully 🎉",
@@ -128,5 +127,5 @@ module.exports = {
   registerController,
   loginController,
   getCurrentUser,
-  logOutUserController
+  logOutUserController,
 };
