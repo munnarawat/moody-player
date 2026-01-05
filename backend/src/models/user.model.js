@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
     },
     lastDetectedMood:{
       type:String,
-      enum:["happy", "sab","angry" ,"neutral", "surprised"]
+      enum:["happy", "sad","angry" ,"neutral", "surprised"]
     }
   },
   {
