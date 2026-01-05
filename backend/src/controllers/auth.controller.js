@@ -6,10 +6,13 @@ const registerController = async (req, res) => {
   try {
     const {
       userName,
-      fullName: { firstName, lastName },
+      fullName,
       email,
       password,
     } = req.body;
+
+    const firstName = fullName?.firstName;
+    const lastName = fullName?.lastName;
 
     const userExits = await userModel.findOne({
       $or: [{ userName }, { email }],
