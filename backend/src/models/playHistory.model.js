@@ -4,12 +4,12 @@ const playHistorySchema = new mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
         required:true,
-        trim:true
+        ref:"user"
     },
     songId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"song",
-        trim:true,
+        required:true
     },
     mood:{
         type:String,
