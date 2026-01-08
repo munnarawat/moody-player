@@ -10,7 +10,7 @@ const Home = () => {
   }, [songs]);
   const currentSong = songs.songs || songs;
   return (
-    <div className=" relative w-full h-screen bg-[#050507] text-white overflow-hidden selection:bg-indigo-500/30 ">
+    <div className=" relative w-full ,h-screen bg-[#050507] text-white overflow-hidden selection:bg-indigo-500/30 ">
       <div
         className="absolute 
     top-[-5%] left-[-10%] 
