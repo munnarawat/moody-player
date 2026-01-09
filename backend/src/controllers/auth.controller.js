@@ -63,14 +63,14 @@ const registerController = async (req, res) => {
 
 const loginController = async (req, res) => {
   try {
-    const { userName, email, password } = req.body;
+    const { identifier, email, password } = req.body;
 
     const user = await userModel
       .findOne({
-        $or: [{ userName }, { email }],
+        $or: [{ userName: identifier }, { email: identifier }],
       })
       .select("+password");
-
+      
     if (!user) {
       return res.status(401).json({
         message: "Invalid userName and email😖❌",

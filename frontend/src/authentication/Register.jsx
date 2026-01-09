@@ -44,7 +44,7 @@ const Register = () => {
          }
       );
       if(response.data){
-        navigate("/login");
+        navigate("/");
       }
       console.log("Registration Successful:", response.data);
     } catch (error) {
@@ -64,7 +64,7 @@ const Register = () => {
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 w-full max-w-md p-8 mt-20 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_0_40px_-10px_rgba(129,140,248,0.3)]">
+        className="relative z-10 w-full  max-w-md p-8 mt-20 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-[0_0_40px_-10px_rgba(129,140,248,0.3)]">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="p-3 bg-indigo-500/20 rounded-full text-indigo-400">
