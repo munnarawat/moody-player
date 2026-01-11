@@ -44,7 +44,7 @@ const Register = () => {
          }
       );
       if(response.data){
-        navigate("/");
+        navigate("/login");
       }
       console.log("Registration Successful:", response.data);
     } catch (error) {

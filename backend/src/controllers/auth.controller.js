@@ -40,8 +40,9 @@ const registerController = async (req, res) => {
     });
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false,  //local host 
+      // secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, //1 day
     });
 
@@ -62,15 +63,16 @@ const registerController = async (req, res) => {
 };
 
 const loginController = async (req, res) => {
+
   try {
-    const { identifier, email, password } = req.body;
+    const { identifier, password } = req.body;
 
     const user = await userModel
       .findOne({
         $or: [{ userName: identifier }, { email: identifier }],
       })
       .select("+password");
-      
+
     if (!user) {
       return res.status(401).json({
         message: "Invalid userName and email😖❌",
@@ -94,8 +96,9 @@ const loginController = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false,  //local host 
+      // secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, //1 day
     });
 
@@ -123,16 +126,10 @@ const getCurrentUser = async (req, res) => {
 };
 const logOutUserController = async (req, res) => {
 try {
-    const token = req.cookies.token;
-  if (!token) {
-    return res.status(400).json({
-      message: "User is not logged in ❌",
-    });
-  }
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
   });
    return res.status(200).json({
     message: "user logged out successfully 🎉",

@@ -7,7 +7,7 @@ const route = express.Router();
 route.post("/register",authControllers.registerController);
 
 // create login api
-route.post("/login", authMiddleware, authControllers.loginController)
+route.post("/login",  authControllers.loginController)
 
 // get current user api
 route.get("/", authMiddleware , authControllers.getCurrentUser);
