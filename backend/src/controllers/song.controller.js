@@ -8,13 +8,14 @@ const createSong = async (req, res) => {
         message: "Audio file required ❌",
       });
     }
-    const { title, artist, mood, genre, duration } = req.body;
+    const { title, artist, mood, imageUrl, genre, duration } = req.body;
     const fileData = await uploadFile(req.file);
 
     const song = await songModel.create({
       title,
       artist,
       audioUrl: fileData.url,
+      imageUrl: fileData.imageUrl,
       mood: Array.isArray(mood) ? mood : mood.split(","),
       genre,
       duration,
