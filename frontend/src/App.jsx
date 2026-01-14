@@ -4,6 +4,7 @@ import NavBar from "./components/nav/NavBar";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "./store/authSlice";
+import MusicPlayer from "./components/MusicPlayer";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ const App = () => {
     <div className="w-full h-full ">
       <NavBar />
       <AppRouter />
+      <MusicPlayer/>
     </div>
   );
 };

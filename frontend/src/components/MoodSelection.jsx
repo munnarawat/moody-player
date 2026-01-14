@@ -51,7 +51,7 @@ const MoodSelection = ({ onMoodSelect }) => {
       <h2 className="text-xl font-bold text-white mb-4">
         Select Mood Manually
       </h2>
-      <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+      <div className="flex gap-4 overflow-x-auto  px-2  py-4 hide-scrollbar">
         {mood.map((mood, index) => (
           <motion.div
             key={mood.id}

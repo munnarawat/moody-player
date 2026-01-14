@@ -3,7 +3,10 @@ import { IoShuffle, IoRepeatOutline } from "react-icons/io5";
 import { MdSkipPrevious, MdSkipNext } from "react-icons/md";
 import { FaPlay, FaPause } from "react-icons/fa";
 
-const SongPlayer = ({ songs }) => {
+const songs =[
+  {title:"pahadi",artist:"nupur pant",audio:"https://ik.imagekit.io/fmkamttxp/moody-player/PAHADI_-_The_Folk_Songs_From_Uttarakhand__Nupur_Pant__Latest_Indie_Folk_Song_2024_A4j6HVwU7.mp3?updatedAt=1767702172666" }
+]
+const SongPlayer = ({  }) => {
   // State variables
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
@@ -131,7 +134,7 @@ const SongPlayer = ({ songs }) => {
         src={currentSong.audio}
         onLoadedMetadata={onLoadedMetadata}
       />
-      <div className="player w-full md:w-[700px] p-5 bg-zinc-800/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="player w-full p-5 bg-zinc-800/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="image-container w-20 h-20 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 flex-shrink-0">
             <img

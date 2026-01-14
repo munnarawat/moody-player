@@ -1,32 +1,63 @@
-import React, { useEffect, useState } from 'react'
-import FaceExpression from '../components/FaceExpression';
-import SongPlayer from '../components/SongPlayer';
-import SongsList from '../components/SongsList';
-import MoodSelection from '../components/MoodSelection';
-import { MOOD_THEMES } from '../utils/moodConstants';
-import { motion } from 'framer-motion';
-import TimeBasedSection from '../components/TimeBasedSection';
+import React, { useEffect, useState } from "react";
+import FaceExpression from "../components/FaceExpression";
+import MoodSelection from "../components/MoodSelection";
+import { MOOD_THEMES } from "../utils/moodConstants";
+import { motion } from "framer-motion";
+import TimeBasedSection from "../components/TimeBasedSection";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { playSong, setRecommendation } from "../store/songSlice";
+import { Play} from "lucide-react";
+import SongPlayer from "../components/SongPlayer";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const [songs, setSongs] = useState([]);
-  const [currentMood, setCurrentMood] = useState("default")
-  useEffect(() => {
-    console.log("Songs in App:", songs);
-  }, [songs]);
-  const currentSong = songs.songs || songs;
+  const [currentMood, setCurrentMood] = useState("default");
+  const [loading, setLoading] = useState(false);
 
-  //  handleMoodChange
-  const handleMoodChange =(detectedMood)=>{
-    const moodKey = detectedMood.toLowerCase();
-    if(MOOD_THEMES[moodKey]){
-      setCurrentMood(moodKey)
-    }else{
-      setCurrentMood("default")
+  // 🎵 Function to Fetch Songs from Backend
+  const fetchSong = async (mood) => {
+    try {
+      setLoading(true);
+      let url = "http://localhost:3000/api/songs";
+      if (mood && mood !== "default") {
+        url += `?mood=${mood}`;
+      }
+      const response = await axios.get(url);
+      if (response.data.song) {
+        setSongs(response.data.song);
+        dispatch(setRecommendation(response.data.song));
+      }
+    } catch (error) {
+      console.error("Error fetching songs:", error);
+    } finally {
+      setLoading(false);
     }
-  }
-  
+  };
+   
+  //  handleMoodChange
+  const handleMoodChange = (mood) => {
+    const moodKey = mood.toLowerCase();
+    setCurrentMood(MOOD_THEMES[moodKey] ? moodKey : "default");
+    fetchSong(moodKey);
+  };
+
+  useEffect(() => {
+    fetchSong();
+  }, []);
+  // song clicked handle
+  const handleSongClicked = () => {
+    dispatch(playSong(songs));
+  };
+
   return (
-    < motion.div className=" relative w-full min-h-screen  text-white overflow-hidden  " animate={{background:MOOD_THEMES[currentMood] || MOOD_THEMES["default"]}} transition={{duration:1.2, ease:"easeInOut"}}>
+    <motion.div
+      className=" relative w-full min-h-screen  text-white overflow-hidden  "
+      animate={{
+        background: MOOD_THEMES[currentMood] || MOOD_THEMES["default"],
+      }}
+      transition={{ duration: 1.2, ease: "easeInOut" }}>
       <div
         className="absolute 
     top-[-5%] left-[-10%] 
@@ -48,10 +79,49 @@ const Home = () => {
     pointer-events-none mix-blend-screen"
       />
       <FaceExpression setSongs={setSongs} />
-      <MoodSelection onMoodSelect={handleMoodChange}/>
-      <TimeBasedSection/>
+      <MoodSelection onMoodSelect={handleMoodChange} />
+      <TimeBasedSection />
+      {/* dynamic song list */}
+      <div className="mt-8 mb-24">
+        <h2 className="text-xl font-bold mb-4 capitalize">
+          {currentMood === "default" ? "All Songs" : `${currentMood} Vibes`}
+        </h2>
+        {loading ? (
+          <p className="text-white/50">Loading songs...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {songs.map((song, index) => (
+              <motion.div
+                key={song._id} // MongoDB ID use karo
+                whileHover={{ scale: 1.02 }}
+                onClick={() => handleSongClicked(song, index)}
+                className="bg-white/10 p-3 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all group">
+                {/* Song Image */}
+                <div className="relative w-16 h-16 rounded-lg overflow-hidden">
+                  <img
+                    src={song.imageUrl}
+                    alt={song.title}
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Hover Play Overlay */}
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Play size={20} fill="white" />
+                  </div>
+                </div>
+
+                {/* Song Info */}
+                <div>
+                  <h3 className="font-bold">{song.title}</h3>
+                  <p className="text-sm text-white/60">{song.artist}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* <SongPlayer/> */}
     </motion.div>
   );
 };
 
-export default Home
+export default Home;

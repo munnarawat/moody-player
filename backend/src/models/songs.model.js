@@ -15,6 +15,13 @@ const songSchema = new mongoose.Schema(
     audioUrl: {
       type: String,
       trim: true,
+      required: true,
+    },
+    imageUrl: {
+      type: String,
+      required: true,
+      default:
+        "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150&q=80",
     },
     mood: {
       type: [String],

@@ -3,3 +3,6 @@
 *{
    font-family: "Montserrat", sans-serif;
 }
+.hide-scrollbar::-webkit-scrollbar{
+  display: none;
+}
