@@ -8,7 +8,10 @@ const {authMiddleware} = require("../middleware/auth.middleware")
 const upload = multer({storage:multer.memoryStorage()});
 
 // post 
-router.post("/songs", authMiddleware ,  upload.single("audio"), createSong)
+router.post("/songs", authMiddleware ,  upload.fields([
+    {name:'audio',maxCount:1},
+    {name:'image',maxCount:1},
+]), createSong)
 
 router.get("/songs", getSong)
 

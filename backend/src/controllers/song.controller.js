@@ -3,19 +3,25 @@ const uploadFile = require("../service/storage.service");
 
 const createSong = async (req, res) => {
   try {
-    if (!req.file) {
+    if (!req.files || !req.files.audio || !req.files.image) {
       return res.status(400).json({
-        message: "Audio file required ❌",
+        message: " both files are  required ❌",
       });
     }
-    const { title, artist, mood, imageUrl, genre, duration } = req.body;
-    const fileData = await uploadFile(req.file);
+    const { title, artist, mood, genre, duration } = req.body;
+    const audioFile = req.files.audio[0];
+    const imageFile = req.files.image[0];
+
+    const [ audioResult, imageResult] = await Promise.all([
+      uploadFile(audioFile),
+      uploadFile(imageFile)
+    ]) 
 
     const song = await songModel.create({
       title,
       artist,
-      audioUrl: fileData.url,
-      imageUrl: fileData.imageUrl,
+      audioUrl: audioResult.url,
+      imageUrl: imageResult.url,
       mood: Array.isArray(mood) ? mood : mood.split(","),
       genre,
       duration,
