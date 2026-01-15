@@ -7,7 +7,7 @@ import TimeBasedSection from "../components/TimeBasedSection";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { playSong, setRecommendation } from "../store/songSlice";
-import { Play} from "lucide-react";
+import { Play } from "lucide-react";
 import SongPlayer from "../components/SongPlayer";
 
 const Home = () => {
@@ -27,7 +27,7 @@ const Home = () => {
       const response = await axios.get(url);
       if (response.data.song) {
         setSongs(response.data.song);
-        dispatch(setRecommendation(response.data.song));
+        dispatch(setRecommendation(response.data.song));        
       }
     } catch (error) {
       console.error("Error fetching songs:", error);
@@ -35,7 +35,7 @@ const Home = () => {
       setLoading(false);
     }
   };
-   
+  
   //  handleMoodChange
   const handleMoodChange = (mood) => {
     const moodKey = mood.toLowerCase();
@@ -47,8 +47,8 @@ const Home = () => {
     fetchSong();
   }, []);
   // song clicked handle
-  const handleSongClicked = () => {
-    dispatch(playSong(songs));
+  const handleSongClicked = (song) => {
+    dispatch(playSong(song));
   };
 
   return (
@@ -78,23 +78,23 @@ const Home = () => {
     blur-[60px] md:blur-[80px] lg:blur-[100px]
     pointer-events-none mix-blend-screen"
       />
-      <FaceExpression setSongs={setSongs} />
+      <FaceExpression onMoodDetected={handleMoodChange} />
       <MoodSelection onMoodSelect={handleMoodChange} />
       <TimeBasedSection />
       {/* dynamic song list */}
-      <div className="mt-8 mb-24">
+      <div className="mt-8 mb-24 px-2">
         <h2 className="text-xl font-bold mb-4 capitalize">
           {currentMood === "default" ? "All Songs" : `${currentMood} Vibes`}
         </h2>
         {loading ? (
           <p className="text-white/50">Loading songs...</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {songs.map((song, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4 mb-30 gap-4">
+            {songs.length > 0 && songs.map((song, index) => (
               <motion.div
-                key={song._id} // MongoDB ID use karo
+                key={song._id} 
                 whileHover={{ scale: 1.02 }}
-                onClick={() => handleSongClicked(song, index)}
+                onClick={() => handleSongClicked(song)}
                 className="bg-white/10 p-3 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all group">
                 {/* Song Image */}
                 <div className="relative w-16 h-16 rounded-lg overflow-hidden">

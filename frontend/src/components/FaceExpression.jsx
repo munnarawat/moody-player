@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "@vladmandic/face-api";
-import axios from "axios";
 
-const FaceExpression = ({ setSongs }) => {
+const FaceExpression = ({ onMoodDetected }) => {
   const videoRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [expression, setExpression] = useState("Initializing...");
@@ -49,6 +48,7 @@ const FaceExpression = ({ setSongs }) => {
     };
   }, [loaded]);
 
+  // 3. Detection Loop
   useEffect(() => {
     let interval;
 
@@ -62,7 +62,6 @@ const FaceExpression = ({ setSongs }) => {
           return;
 
         try {
-          // Face Detect karo
           const detection = await faceapi
             .detectSingleFace(
               videoRef.current,
@@ -78,23 +77,19 @@ const FaceExpression = ({ setSongs }) => {
             const best = Object.entries(exp).sort((a, b) => b[1] - a[1])[0];
             const currentMood = best[0].toLowerCase();
 
-            // 1. UI Update karo
+            // UI Update
             setExpression(
               `${currentMood.toUpperCase()} (${(best[1] * 100).toFixed(0)}%)`
             );
-            setIsDetecting(false);
+            
+            // ✅ Stop Scanning immediately after detection
+            setIsDetecting(false); 
 
             console.log("✅ Mood Detected:", currentMood);
-            try {
-              const res = await axios.get(
-                `http://localhost:3000/api/songs?mood=${currentMood}`
-              );
-              if (setSongs) {
-                setSongs(res.data);
-              }
-            } catch (apiError) {
-              console.error("❌ API Call Failed:", apiError);
+            if (onMoodDetected) {
+                onMoodDetected(currentMood);
             }
+
           } else {
             setExpression("Looking for face... 😐");
           }
@@ -102,6 +97,7 @@ const FaceExpression = ({ setSongs }) => {
           console.log("Detection Loop Error:", error);
         }
       };
+      
       interval = setInterval(() => {
         if (videoRef.current?.readyState === 4) {
           detectExpression();
@@ -115,7 +111,7 @@ const FaceExpression = ({ setSongs }) => {
         clearInterval(interval);
       }
     };
-  }, [isDetecting, loaded, setSongs]);
+  }, [isDetecting, loaded, onMoodDetected]);
 
   // 4. Toggle Handler
   const toggleDetection = () => {
@@ -165,9 +161,10 @@ const FaceExpression = ({ setSongs }) => {
               onClick={toggleDetection}
               className={`relative mt-6 px-8 py-3 rounded-full font-bold text-white transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg active:scale-95 ${
                 isDetecting
-                  ? "bg-red-500 shadow-red-500/50 hover:shadow-red-500/70" // Stop Style
-                  : "bg-gradient-to-r from-[#5F1FDB] via-[#7B3FE4] to-[#9760ED] shadow-[#5F1FDB]/50 hover:shadow-[#5F1FDB]/70" // Start Style
-              }`}>
+                  ? "bg-red-500 shadow-red-500/50 hover:shadow-red-500/70"
+                  : "bg-linear-to-r from-[#5F1FDB] via-[#7B3FE4] to-[#9760ED] shadow-[#5F1FDB]/50 hover:shadow-[#5F1FDB]/70"
+              }`}
+            >
               {isDetecting ? "Stop Scanning" : "Scan Mood & Get Songs"}
             </button>
           </div>
