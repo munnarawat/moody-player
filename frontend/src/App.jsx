@@ -5,6 +5,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setUser } from "./store/authSlice";
 import MusicPlayer from "./components/MusicPlayer";
+import Footer from "./page/Footer";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const App = () => {
       <NavBar />
       <AppRouter />
       <MusicPlayer/>
+      <Footer/>
     </div>
   );
 };

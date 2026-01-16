@@ -83,7 +83,6 @@ const MusicPlayer = () => {
     };
   }, [dispatch]);
 
-  // Helper: Time Format (e.g., 125s -> 2:05)
   const formatTime = (time) => {
     if (!time) return "0:00";
     const minutes = Math.floor(time / 60);
@@ -113,7 +112,7 @@ const MusicPlayer = () => {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
       className="fixed bottom-0 left-0 right-0 z-50 px-4 py-4 sm:px-6">
-      <div className="w-full h-20 bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between px-4 sm:px-8 shadow-2xl shadow-black/50">
+      <div className="w-full h-20 bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between px-4 sm:px-8 shadow-2xl shadow-black/50">
         {/* LEFT: Song Info */}
         <div className="flex items-center gap-4 w-1/4">
           <motion.div
