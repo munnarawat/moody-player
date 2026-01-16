@@ -107,7 +107,6 @@ const MusicPlayer = () => {
   };
 
   if (!currentSong) return null;
-
   return (
     <motion.div
       initial={{ y: 100 }}

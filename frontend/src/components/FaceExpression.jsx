@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "@vladmandic/face-api";
+import { motion } from "framer-motion";
 
 const FaceExpression = ({ onMoodDetected }) => {
   const videoRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [expression, setExpression] = useState("Initializing...");
   const [isDetecting, setIsDetecting] = useState(false);
+  const [isGlowing, setIsGlowing] = useState(false);
 
   // 1. Load Models
   useEffect(() => {
@@ -77,19 +79,19 @@ const FaceExpression = ({ onMoodDetected }) => {
             const best = Object.entries(exp).sort((a, b) => b[1] - a[1])[0];
             const currentMood = best[0].toLowerCase();
 
-            // UI Update
             setExpression(
               `${currentMood.toUpperCase()} (${(best[1] * 100).toFixed(0)}%)`
             );
-            
-            // ✅ Stop Scanning immediately after detection
-            setIsDetecting(false); 
+
+            // Stop Scanning
+            setIsDetecting(false);
+            // Activate Success Glow
+            setIsGlowing(true);
 
             console.log("✅ Mood Detected:", currentMood);
             if (onMoodDetected) {
-                onMoodDetected(currentMood);
+              onMoodDetected(currentMood);
             }
-
           } else {
             setExpression("Looking for face... 😐");
           }
@@ -97,7 +99,7 @@ const FaceExpression = ({ onMoodDetected }) => {
           console.log("Detection Loop Error:", error);
         }
       };
-      
+
       interval = setInterval(() => {
         if (videoRef.current?.readyState === 4) {
           detectExpression();
@@ -105,11 +107,8 @@ const FaceExpression = ({ onMoodDetected }) => {
       }, 1000);
     }
 
-    // Cleanup interval
     return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
+      if (interval) clearInterval(interval);
     };
   }, [isDetecting, loaded, onMoodDetected]);
 
@@ -118,32 +117,50 @@ const FaceExpression = ({ onMoodDetected }) => {
     setIsDetecting(!isDetecting);
     if (!isDetecting) {
       setExpression("Scanning...");
+      setIsGlowing(false); // Reset glow on new scan
     }
   };
 
   return (
-    <div className="container ">
-      <div className="relative z-10 mt-20 p-2 lg:px-20 ">
+    <div className="container">
+      <div className="relative z-10 mt-20 p-2 lg:px-20">
         <h2 className="text-2xl font-semibold">Live Mood Detection</h2>
         <div className="mt-2 flex gap-10 items-center flex-col md:flex-row">
-          <div className="overflow-hidden relative">
-            <video
-              className="rounded-xl"
-              ref={videoRef}
-              autoPlay
-              muted
-              playsInline
-              width="360"
-              height="240"
-            />
-            <div className="absolute bottom-4 left-4">
-              <div className="flex flex-col px-5 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg">
-                <span className="text-xs text-gray-200 font-medium mb-0.5">
-                  Mood:
-                </span>
-                <span className="text-lg font-bold text-white tracking-wide">
-                  {expression}
-                </span>
+          <div className="relative rounded-xl">
+            {/* 3. VIDEO FRAME */}
+            <div className="relative overflow-hidden rounded-xl bg-black z-10">
+              <video
+                ref={videoRef}
+                autoPlay
+                muted
+                playsInline
+                width="360"
+                height="240"
+                className="relative z-10"
+              />
+              {/* 🔥 SCANNING LASER BEAM (Scanning Effect) 🔥 */}
+              {isDetecting && (
+                <motion.div
+                  initial={{ top: "-10%" }}
+                  animate={{ top: "110%" }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  className="absolute left-0 right-0 h-0.5 bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.8)] z-20"
+                />
+              )}
+              {/* Mood Badge */}
+              <div className="absolute bottom-4 left-4 z-20">
+                <div className="flex flex-col px-5 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg">
+                  <span className="text-xs text-gray-200 font-medium mb-0.5">
+                    Mood:
+                  </span>
+                  <span className="text-lg font-bold text-white tracking-wide">
+                    {expression}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -151,7 +168,7 @@ const FaceExpression = ({ onMoodDetected }) => {
           <div className="py-4 flex flex-col items-center md:items-start">
             <div className="heading text-center md:text-start">
               <h2 className="text-xl font-semibold">Live Mood Detection</h2>
-              <p className=" mt-2 md:w-1/2">
+              <p className="mt-2 md:w-1/2">
                 Your current mood is being analyzed in real-time. Enjoy the
                 music tailored to your feelings.
               </p>
@@ -163,8 +180,7 @@ const FaceExpression = ({ onMoodDetected }) => {
                 isDetecting
                   ? "bg-red-500 shadow-red-500/50 hover:shadow-red-500/70"
                   : "bg-linear-to-r from-[#5F1FDB] via-[#7B3FE4] to-[#9760ED] shadow-[#5F1FDB]/50 hover:shadow-[#5F1FDB]/70"
-              }`}
-            >
+              }`}>
               {isDetecting ? "Stop Scanning" : "Scan Mood & Get Songs"}
             </button>
           </div>

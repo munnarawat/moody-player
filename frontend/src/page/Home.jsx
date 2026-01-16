@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { playSong, setRecommendation } from "../store/songSlice";
 import { Play } from "lucide-react";
-import SongPlayer from "../components/SongPlayer";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -25,9 +24,13 @@ const Home = () => {
         url += `?mood=${mood}`;
       }
       const response = await axios.get(url);
-      if (response.data.song) {
-        setSongs(response.data.song);
-        dispatch(setRecommendation(response.data.song));        
+      if (response.data.song && response.data.song.length > 0) {
+        const fetchedSongs = response.data.song;
+        setSongs(fetchedSongs);
+        dispatch(setRecommendation(fetchedSongs));   
+        if(mood && mood !== "default"){
+          dispatch(playSong(fetchedSongs[0]));
+        }     
       }
     } catch (error) {
       console.error("Error fetching songs:", error);
@@ -119,7 +122,6 @@ const Home = () => {
           </div>
         )}
       </div>
-      {/* <SongPlayer/> */}
     </motion.div>
   );
 };
