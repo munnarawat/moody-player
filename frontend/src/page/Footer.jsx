@@ -18,7 +18,7 @@ const Footer = () => {
     {sociolIcon: Instagram, link:"https://www.instagram.com/munna.rawat26/"},
   ]
   return (
-    <footer className="relative w-full overflow-hidden bg-black/90  backdrop-blur-lg border-t border-white/10 pt-16 pb-16 px-6 md:px-20 text-white z-0 ">
+    <footer className="relative w-full overflow-hidden bg-black/90  backdrop-blur-lg border-t border-white/10 pt-16 pb-30 px-6 md:px-20 text-white z-0 ">
       <div
         className="absolute 
     top-[-5%] left-[-10%] 

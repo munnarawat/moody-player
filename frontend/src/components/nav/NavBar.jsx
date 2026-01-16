@@ -38,6 +38,7 @@ const NavBar = () => {
     { name: "Moods", path: "/moods" },
     { name: "Playlists", path: "/playlist" },
     { name: "History", path: "/history" },
+    { name: "Dashboard", path: "/admin/upload" },
   ];
    const handleLogOut = async () =>{
     try {
