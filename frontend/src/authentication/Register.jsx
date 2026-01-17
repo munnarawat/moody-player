@@ -53,7 +53,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black flex items-center justify-center relative overflow-hidden text-white">
+    <div className="min-h-screen w-full bg-black flex items-center justify-center relative overflow-hidden text-white pb-10">
       {/* BACKGROUND ANIMATED CIRCLES */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}

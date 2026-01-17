@@ -31,11 +31,13 @@ const Login = () => {
         "http://localhost:3000/api/auth/login",
         payload,
         { withCredentials: true }
-      );
+      );      
       if (response.data.user) {
         dispatch(setUser(response.data.user));
+        localStorage.setItem("token", response.data.token)
         navigate("/");
       }
+      
     } catch (error) {
       console.log(error);
       const errorMessage =
@@ -47,7 +49,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black flex items-center justify-center relative overflow-hidden text-white">
+    <div className="min-h-screen w-full bg-black flex items-center justify-center relative overflow-hidden pb-10 text-white">
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, -90, 0] }}
         transition={{ duration: 20, repeat: Infinity }}
