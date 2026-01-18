@@ -24,25 +24,46 @@ const AdminUpload = () => {
   // submitHandler
   const onSubmit = async (data) => {
     setLoading(true);
-    setSuccess(false);
+    let token = localStorage.getItem("token");
+    if (token) {
+      token = token.replace(/^"|"$/g, "");
+    }
+    console.log("🧹 Clean Token:", token);
+    if (!token) {
+      alert("please login first");
+      setSuccess(false);
+      return;
+    }
     try {
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("artist", data.artist);
       formData.append("genre", data.genre);
       formData.append("mood", data.mood);
-      if(data.audio[0]) formData.append("audio", data.audio[0]);
-      if(data.image[0]) formData.append("audio", data.image[0]);
-    //   api call
 
-     await axios.post("http://localhost/api/songs",formData,{
-        headers:{"Content-Type": "multipart/form-data"},
-     })
-     setSuccess(true);
-     reset();
+      if (data.audio[0]) formData.append("audio", data.audio[0]);
+      if (data.image[0]) formData.append("image", data.image[0]);
+      //   api call
+
+      await axios.post("http://localhost:3000/api/songs", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSuccess(true);
+      reset();
     } catch (error) {
-      console.error("Upload Failed:", error);
-      alert("Upload Failed! Console check karo.");
+      console.error("Upload Error:", error);
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 403)
+      ) {
+        alert(
+          "Permission Denied! Ya toh Token galat hai ya tum Admin nahi ho.",
+        );
+      } else {
+        alert("Upload Failed!");
+      }
     } finally {
       setLoading(false);
     }

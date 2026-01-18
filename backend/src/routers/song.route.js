@@ -2,13 +2,13 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const {createSong,getSong} = require("../controllers/song.controller");
-const {authMiddleware} = require("../middleware/auth.middleware")
+const {authMiddleware, adminMiddleware} = require("../middleware/auth.middleware")
 
 
 const upload = multer({storage:multer.memoryStorage()});
 
 // post 
-router.post("/songs", authMiddleware ,  upload.fields([
+router.post("/songs", authMiddleware , adminMiddleware,  upload.fields([
     {name:'audio',maxCount:1},
     {name:'image',maxCount:1},
 ]), createSong)
