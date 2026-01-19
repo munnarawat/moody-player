@@ -13,15 +13,22 @@ const App = () => {
 
   useEffect(() => {
     const checkUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setIsCheckingAuth(false);
+        return;
+      }
       try {
         const response = await axios.get("http://localhost:3000/api/auth/", {
-          withCredentials: true,
+         headers:{
+          Authorization:`Bearer ${token}`
+         }
         });
         if (response.data.user) {
           dispatch(setUser(response.data.user));
         }
       } catch (error) {
-        console.log("User not logged in or session expired");
+        console.log("token expired or Invalid❌");
         dispatch(setUser(null));
       } finally {
         setIsCheckingAuth(false);
@@ -40,8 +47,8 @@ const App = () => {
     <div className="w-full h-full ">
       <NavBar />
       <AppRouter />
-      <MusicPlayer/>
-      <Footer/>
+      <MusicPlayer />
+      <Footer />
     </div>
   );
 };

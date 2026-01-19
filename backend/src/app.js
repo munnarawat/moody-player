@@ -7,11 +7,6 @@ const moodHistoryRouter = require("./routers/moodHistory.route");
 const playHistoryRouter = require("./routers/playHistory.route");
 
 const app = express();
-app.use((req, res, next) => {
-  console.log(`📢 [Request Aayi]: ${req.method} ${req.url}`);
-  console.log("📨 Headers Recieved:", req.headers.authorization);
-  next();
-});
 // middlewares
 app.use(
   cors({
