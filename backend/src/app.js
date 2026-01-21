@@ -5,7 +5,7 @@ const SongsRouter = require("./routers/song.route");
 const authRouter = require("./routers/auth.route");
 const moodHistoryRouter = require("./routers/moodHistory.route");
 const playHistoryRouter = require("./routers/playHistory.route");
-
+const playlistRouter = require("./routers/playList.route")
 const app = express();
 // middlewares
 app.use(
@@ -25,5 +25,6 @@ app.use("/api/auth", authRouter);
 app.use("/api", SongsRouter);
 app.use("/api", moodHistoryRouter);
 app.use("/api", playHistoryRouter);
+app.use("/api/playlist", playlistRouter )
 
 module.exports = app;
