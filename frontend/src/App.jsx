@@ -6,6 +6,8 @@ import { useDispatch } from "react-redux";
 import { setUser } from "./store/authSlice";
 import MusicPlayer from "./components/MusicPlayer";
 import Footer from "./page/Footer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -49,6 +51,19 @@ const App = () => {
       <AppRouter />
       <MusicPlayer />
       <Footer />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark" 
+        transition: Bounce
+      />
     </div>
   );
 };

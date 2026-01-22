@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { X, Layers, Check, Plus } from "lucide-react";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
 const AddToPlaylistModal = ({isOpen, onClose, songId}) => {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,14 +41,14 @@ const AddToPlaylistModal = ({isOpen, onClose, songId}) => {
           },
         },
       );
-      alert("Song added successfully! 🎵");
+      toast.success("Song added to playlist! 🎵");
       onClose();
     } catch (error) {
       console.error("Add song error", error);
       if (error.response && error.response.status === 400) {
-        alert("Song is already in this playlist!");
+        toast.warning("Song is already in this playlist! ⚠️");
       } else {
-        alert("Failed to add song.");
+        toast.error("Failed to add song. ❌");
       }
     }
   };
