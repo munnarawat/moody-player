@@ -7,7 +7,7 @@ const router = express.Router();
 // post 
 router.post("/",authMiddleware, createPlayList);
 
-// get playlistp
+// get playlist
 router.get("/", authMiddleware,getUserPlayList )
 
 

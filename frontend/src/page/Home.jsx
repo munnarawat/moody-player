@@ -7,13 +7,15 @@ import TimeBasedSection from "../components/TimeBasedSection";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { playSong, setRecommendation } from "../store/songSlice";
-import { Play } from "lucide-react";
+import AddToPlaylistModal from "../playList/AddToPlaylistModal";
+import SongsList from "../components/SongsList";
 
 const Home = () => {
   const dispatch = useDispatch();
   const [songs, setSongs] = useState([]);
   const [currentMood, setCurrentMood] = useState("default");
   const [loading, setLoading] = useState(false);
+  const [selectedSongId, setSelectedSongId] = useState(null);
 
   // 🎵 Function to Fetch Songs from Backend
   const fetchSong = async (mood) => {
@@ -45,7 +47,10 @@ const Home = () => {
     setCurrentMood(MOOD_THEMES[moodKey] ? moodKey : "default");
     fetchSong(moodKey);
   };
-
+  const handleAddToPlaylistClick =(e,songId)=>{
+    e.stopPropagation();
+    setSelectedSongId(songId)
+  }
   useEffect(() => {
     fetchSong();
   }, []);
@@ -92,36 +97,10 @@ const Home = () => {
         {loading ? (
           <p className="text-white/50">Loading songs...</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4 mb-30 gap-4">
-            {songs.length > 0 && songs.map((song, index) => (
-              <motion.div
-                key={song._id} 
-                whileHover={{ scale: 1.02 }}
-                onClick={() => handleSongClicked(song)}
-                className="bg-white/10 p-3 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-white/20 transition-all group">
-                {/* Song Image */}
-                <div className="relative w-16 h-16 rounded-lg overflow-hidden">
-                  <img
-                    src={song.imageUrl}
-                    alt={song.title}
-                    className="w-full h-full object-cover"
-                  />
-                  {/* Hover Play Overlay */}
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Play size={20} fill="white" />
-                  </div>
-                </div>
-
-                {/* Song Info */}
-                <div>
-                  <h3 className="font-bold">{song.title}</h3>
-                  <p className="text-sm text-white/60">{song.artist}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <SongsList songs={songs} handleAddPlaylist={handleAddToPlaylistClick} handleSongClicked={handleSongClicked}/>
         )}
       </div>
+       <AddToPlaylistModal isOpen={ !!selectedSongId} songId={selectedSongId} onClose={()=>setSelectedSongId(null)} />
     </motion.div>
   );
 };

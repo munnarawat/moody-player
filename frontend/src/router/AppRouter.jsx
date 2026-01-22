@@ -7,6 +7,7 @@ import Register from '../authentication/Register'
 import PlayList from '../playList/PlayList'
 import Home from '../page/Home'
 import AdminUpload from '../page/AdminUpload'
+import PlaylistDetails from '../playList/PlaylistDetails'
 
 const AppRouter = () => {
   return (
@@ -16,6 +17,7 @@ const AppRouter = () => {
         <Route path='/history' element={<History/>}/>
         <Route path='/admin/upload' element={<AdminUpload/>}/>
         <Route path='/playList' element={<PlayList/>}/>
+        <Route path='/playList/:id' element={<PlaylistDetails/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<Register/>}/>
     </Routes>

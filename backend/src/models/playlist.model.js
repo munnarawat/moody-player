@@ -18,7 +18,7 @@ const playListSchema = new mongoose.Schema({
     songs:[
         {
             type:mongoose.Schema.Types.ObjectId,
-            ref:"song"
+            ref:"songs"
         }
     ],
     coverImage:{

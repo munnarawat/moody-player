@@ -46,10 +46,16 @@ const getUserPlayList = async (req, res) => {
 const getPlaylistById = async (req, res) => {
   try {
     const { id } = req.params;
-    const playlist = await playListModel.findById(id).populate("songs");
-    if (!playlist) {
+
+    const rawPlaylist = await playListModel.findById(id);
+    console.log("🔍 Raw Playlist from DB:", rawPlaylist);
+     if (!rawPlaylist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
+    const playlist = await playListModel.findById(id).populate("songs");
+    // if (!playlist) {
+    //   return res.status(404).json({ message: "Playlist not found" });
+    // }
     res.status(200).json({
       message: "playlist fetched",
       playlist,
@@ -61,21 +67,36 @@ const getPlaylistById = async (req, res) => {
 const addSongToPlaylist = async (req, res) => {
   try {
     const { playlistId, songId } = req.body;
+
+    // 1. Validate Input
+    if (!playlistId || !songId) {
+      return res.status(400).json({ message: "Playlist ID and Song ID required" });
+    }
     const playlist = await playListModel.findById(playlistId);
+    
     if (!playlist) {
-      return res.status(404).json({
-        message: "playlist not found",
-      });
+      return res.status(404).json({ message: "Playlist not found" });
     }
-    if (playlist.songs.includes(songId)) {
-      return res.status(400).json({
-        message: "song already in playlist",
-      });
+    if (!playlist.songs) {
+      playlist.songs = [];
     }
-    playlist.songs.push();
+    const isDuplicate = playlist.songs.some(id => id.toString() === songId);
+    if (isDuplicate) {
+      return res.status(400).json({ message: "Song already in playlist" });
+    }
+    playlist.songs.push(songId);
+    
     await playlist.save();
-    res.status(200).json({ message: "Song added to playlist! 🎵", playlist });
+
+    console.log("✅ Song Added:", songId, "to Playlist:", playlist.name); // Debug log
+
+    res.status(200).json({ 
+        message: "Song added to playlist! 🎵", 
+        playlist 
+    });
+
   } catch (error) {
+    console.error("Add Song Error:", error);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
