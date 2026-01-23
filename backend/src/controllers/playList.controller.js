@@ -48,14 +48,11 @@ const getPlaylistById = async (req, res) => {
     const { id } = req.params;
 
     const rawPlaylist = await playListModel.findById(id);
-    console.log("🔍 Raw Playlist from DB:", rawPlaylist);
+    // console.log("🔍 Raw Playlist ,from DB:", rawPlaylist);
      if (!rawPlaylist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
     const playlist = await playListModel.findById(id).populate("songs");
-    // if (!playlist) {
-    //   return res.status(404).json({ message: "Playlist not found" });
-    // }
     res.status(200).json({
       message: "playlist fetched",
       playlist,
@@ -83,7 +80,7 @@ const addSongToPlaylist = async (req, res) => {
     const isDuplicate = playlist.songs.some(id => id.toString() === songId);
     if (isDuplicate) {
       return res.status(400).json({ message: "Song already in playlist" });
-    }
+    }``
     playlist.songs.push(songId);
     
     await playlist.save();
@@ -100,9 +97,56 @@ const addSongToPlaylist = async (req, res) => {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
+const deletePlaylist = async (req,res)=>{
+  try {
+     const {id} = req.params;
+     const userId = req.user._id;
+     const playlist = await playListModel.findOneAndDelete({
+      _id:id,
+      owner:userId,
+     });
+     if(!playlist){
+      return res.status(404).json({
+        message:"playlist not found or unauthorized "
+      });
+     }
+     res.status(200).json({
+      message:"playlistDeleted Successfully ✅"
+     });
+   } catch (error) {
+    return res.status(500).json({
+      message:"Server error ",
+      error:error.message
+    })
+  }
+}
+const removeSongFromPlayList = async (req,res)=>{
+  try {
+    const {playlistId, songId} =req.body;
+    const playlist = await playListModel.findByIdAndUpdate(
+      playlistId,
+      {$pull: {songs:songId}},
+      {new:true}
+    ).populate("songs");
+
+    if(!playlist){
+      return res.status(404).json({
+        message:"playlist not found ❌"
+      });
+    }
+    res.status(200).json({
+      message:"song Remove from playlist ❌",
+      playlist
+    })
+  } catch (error) {
+    return res.status(500).json({message:"server Error", error:error.message});
+  }
+}
 module.exports = {
   createPlayList,
   getUserPlayList,
   getPlaylistById,
-  addSongToPlaylist
+  addSongToPlaylist,
+  deletePlaylist,
+  removeSongFromPlayList
 };

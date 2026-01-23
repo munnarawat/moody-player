@@ -3,9 +3,13 @@ import { X, Layers, Check, Plus } from "lucide-react";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+
 const AddToPlaylistModal = ({isOpen, onClose, songId}) => {
+    const dispatch = useDispatch();
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
       fetchPlaylist();
@@ -52,6 +56,8 @@ const AddToPlaylistModal = ({isOpen, onClose, songId}) => {
       }
     }
   };
+
+ 
   if (!isOpen) return null;
 
   return (
