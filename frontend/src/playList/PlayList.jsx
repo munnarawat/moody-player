@@ -28,7 +28,6 @@ const PlayList = () => {
       setIsLoading(false);
     }
   };
-  console.log(playlists);
 
   useEffect(() => {
     fetchPlaylist();
