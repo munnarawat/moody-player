@@ -16,7 +16,6 @@ const PlayList = () => {
       return;
     }
     try {
-      
       const response = await axios.get("http://localhost:3000/api/playlist", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -29,6 +28,7 @@ const PlayList = () => {
       setIsLoading(false);
     }
   };
+  console.log(playlists);
 
   useEffect(() => {
     fetchPlaylist();
@@ -50,7 +50,7 @@ const PlayList = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       alert("Playlist Created! 🎉");
       fetchPlaylist();
@@ -113,8 +113,7 @@ const PlayList = () => {
             <div className="create-btn">
               <button
                 onClick={handleCreatePlaylist}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full transition-all group backdrop-blur-md cursor-pointer"
-              >
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full transition-all group backdrop-blur-md cursor-pointer">
                 <Plus
                   className="group-hover:rotate-90 transition-transform text-indigo-300 duration-500"
                   size={20}
@@ -130,8 +129,7 @@ const PlayList = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col mt-2 items-center justify-center py-20 text-center bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md "
-          >
+            className="flex flex-col mt-2 items-center justify-center py-20 text-center bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md ">
             <div className="w-24 h-24 bg-indigo-500/40 rounded-full flex items-center justify-center mb-6 animate-pulse">
               <Music size={40} className="text-white " />
             </div>
@@ -143,8 +141,7 @@ const PlayList = () => {
             {/* Create Button (Empty State) */}
             <button
               onClick={handleCreatePlaylist}
-              className="flex gap-2 items-center px-8 py-3 bg-linear-to-r from-indigo-400 to-purple-600 rounded-full font-bold shadow-lg shadow-indigo-500/30 hover:scale-105 duration-300 transition-transform cursor-pointer"
-            >
+              className="flex gap-2 items-center px-8 py-3 bg-linear-to-r from-indigo-400 to-purple-600 rounded-full font-bold shadow-lg shadow-indigo-500/30 hover:scale-105 duration-300 transition-transform cursor-pointer">
               <Plus size={20} /> Create Playlist
             </button>
           </motion.div>
@@ -153,16 +150,14 @@ const PlayList = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-          >
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {/* Create New Card */}
             <motion.div
               onClick={handleCreatePlaylist}
               variants={itemVariant}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="aspect-square flex flex-col items-center justify-center gap-4 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl hover:bg-white/10 hover:border-indigo-400/50 transition-all group cursor-pointer"
-            >
+              className="aspect-square flex flex-col items-center justify-center gap-4 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl hover:bg-white/10 hover:border-indigo-400/50 transition-all group cursor-pointer">
               <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors">
                 <Plus
                   size={30}
@@ -180,16 +175,14 @@ const PlayList = () => {
                 <motion.div
                   key={items._id}
                   variants={itemVariant}
-                  className="group cursor-pointer"
-                >
+                  className="group cursor-pointer">
                   <Link to={`/playlist/${items._id}`}>
                     <div className="relative aspect-square mb-4 rounded-2xl overflow-hidden shadow-lg bg-white/5">
                       {/* Hover Overlay */}
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center backdrop-blur-[2px]">
                         <motion.div
                           whileHover={{ scale: 1.1 }}
-                          className="bg-indigo-500/80 rounded-full p-3 pl-3.5 shadow-lg shadow-indigo-500/40"
-                        >
+                          className="bg-indigo-500/80 rounded-full p-3 pl-3.5 shadow-lg shadow-indigo-500/40">
                           <PlayCircle size={32} fill="white" />
                         </motion.div>
                       </div>
@@ -200,17 +193,48 @@ const PlayList = () => {
                           src={items.coverImage}
                           alt={items.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                        />         
                       ) : (
-                        // Fallback Gradient (Kyunki DB mein gradient nahi hai)
-                        <div
-                          className={`w-full h-full bg-gradient-to-br from-indigo-500 to-purple-900 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}
-                        >
-                          <Music size={50} className="text-white/40" />
+                        <div className="w-full h-full bg-[#282828]">
+                          {(!items.songs ||
+                            items?.songs.length === 0) && (
+                            <div
+                              className={`w-full h-full bg-linear-to-br from-indigo-500 to-purple-900 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
+                              <Music size={50} className="text-white/40" />
+                            </div>
+                          )}
+                          {(items?.songs.length === 1 ||
+                            items?.songs.length === 2 ||
+                            items?.songs.length === 3) && (
+                            <img
+                              src={items?.songs[0].imageUrl}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                          {items?.songs.length >= 4 && (
+                            <div className="grid grid-cols-2 grid-rows-2 h-full w-full">
+                              <img
+                                src={items?.songs[0].imageUrl}
+                                className="w-full h-full object-cover"
+                              />
+                              <img
+                                src={items?.songs[1].imageUrl}
+                                className="w-full h-full object-cover"
+                              />
+                              <img
+                                src={items?.songs[2].imageUrl}
+                                className="w-full h-full object-cover"
+                              />
+                              <img
+                                src={items?.songs[3].imageUrl}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
-
                     {/* ✅ FIX 3: Use 'name' and 'songs.length' */}
                     <h3 className="font-bold text-lg truncate group-hover:text-indigo-300 transition-colors capitalize">
                       {items.name}
