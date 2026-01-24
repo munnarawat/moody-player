@@ -100,7 +100,7 @@ const PlayList = () => {
         {/* Header section */}
         <div className="header flex items-center justify-between ">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center gap-3">
+            <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-purple-400 flex items-center gap-3">
               <Layers className=" text-indigo-400" />
               Your Playlist
             </h1>
@@ -143,7 +143,7 @@ const PlayList = () => {
             {/* Create Button (Empty State) */}
             <button
               onClick={handleCreatePlaylist}
-              className="flex gap-2 items-center px-8 py-3 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full font-bold shadow-lg shadow-indigo-500/30 hover:scale-105 duration-300 transition-transform cursor-pointer"
+              className="flex gap-2 items-center px-8 py-3 bg-linear-to-r from-indigo-400 to-purple-600 rounded-full font-bold shadow-lg shadow-indigo-500/30 hover:scale-105 duration-300 transition-transform cursor-pointer"
             >
               <Plus size={20} /> Create Playlist
             </button>

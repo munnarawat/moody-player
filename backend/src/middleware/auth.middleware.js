@@ -31,7 +31,7 @@ const authMiddleware = async (req, res, next) => {
       // console.log("❌ Database mein User nahi mila! ID:", decoded.id);
       throw new Error("User Not Found in DB");
     }
-    console.log("✅ User Found:", user.email, "| Role:", user.role);
+    // console.log("✅ User Found:", user.email, "| Role:", user.role);
     req.user = user;
     next();
 

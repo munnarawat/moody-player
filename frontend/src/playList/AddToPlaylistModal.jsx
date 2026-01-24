@@ -11,7 +11,7 @@ const AddToPlaylistModal = ({isOpen, onClose, songId}) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen) { 
       fetchPlaylist();
     }
   }, [isOpen]);
