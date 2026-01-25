@@ -3,10 +3,14 @@ import { Plus, Music, PlayCircle, Loader, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import CreatePlaylist from "./CreatePlaylist";
 
 const PlayList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [playlists, setPlayLists] = useState([]);
+  const [openPlaylist , setIsOpenPlaylist] = useState(false);
+
 
   // Fetch Playlists
   const fetchPlaylist = async () => {
@@ -32,32 +36,11 @@ const PlayList = () => {
   useEffect(() => {
     fetchPlaylist();
   }, []);
+   
+  const handleOpenPlaylist = ()=>{
+    setIsOpenPlaylist(true)
+  }
 
-  // Handle Create Playlist
-  const handleCreatePlaylist = async () => {
-    const name = window.prompt("Enter playlist name");
-    if (!name) return;
-    const token = localStorage.getItem("token");
-    try {
-      const res = await axios.post(
-        "http://localhost:3000/api/playlist",
-        {
-          name,
-          description: "My awesome playlist",
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      alert("Playlist Created! 🎉");
-      fetchPlaylist();
-    } catch (error) {
-      console.error("Create failed:", error);
-      alert("Failed to create playlist");
-    }
-  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -94,7 +77,7 @@ const PlayList = () => {
         <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-purple-600/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px]" />
       </div>
-
+       <CreatePlaylist isOpen={openPlaylist} refreshPlaylists={fetchPlaylist}  isClose={()=>setIsOpenPlaylist(false)}/>
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header section */}
         <div className="header flex items-center justify-between ">
@@ -111,7 +94,7 @@ const PlayList = () => {
           {playlists && playlists.length > 0 && (
             <div className="create-btn">
               <button
-                onClick={handleCreatePlaylist}
+                onClick={handleOpenPlaylist}
                 className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full transition-all group backdrop-blur-md cursor-pointer">
                 <Plus
                   className="group-hover:rotate-90 transition-transform text-indigo-300 duration-500"
@@ -139,7 +122,7 @@ const PlayList = () => {
             </p>
             {/* Create Button (Empty State) */}
             <button
-              onClick={handleCreatePlaylist}
+              onClick={handleOpenPlaylist}
               className="flex gap-2 items-center px-8 py-3 bg-linear-to-r from-indigo-400 to-purple-600 rounded-full font-bold shadow-lg shadow-indigo-500/30 hover:scale-105 duration-300 transition-transform cursor-pointer">
               <Plus size={20} /> Create Playlist
             </button>
@@ -152,7 +135,7 @@ const PlayList = () => {
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {/* Create New Card */}
             <motion.div
-              onClick={handleCreatePlaylist}
+              onClick={handleOpenPlaylist}
               variants={itemVariant}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

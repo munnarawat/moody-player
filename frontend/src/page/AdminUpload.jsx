@@ -10,6 +10,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const AdminUpload = () => {
   const [loading, setLoading] = useState(false);
@@ -28,9 +29,8 @@ const AdminUpload = () => {
     if (token) {
       token = token.replace(/^"|"$/g, "");
     }
-    console.log("🧹 Clean Token:", token);
     if (!token) {
-      alert("please login first");
+      toast.warn("please login first");
       setSuccess(false);
       return;
     }
@@ -62,7 +62,7 @@ const AdminUpload = () => {
           "Permission Denied! Ya toh Token galat hai ya tum Admin nahi ho.",
         );
       } else {
-        alert("Upload Failed!");
+        toast.error("Upload Failed!");
       }
     } finally {
       setLoading(false);
