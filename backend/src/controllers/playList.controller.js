@@ -1,5 +1,6 @@
 const playListModel = require("../models/playlist.model");
 const songModel = require("../models/songs.model");
+const uploadFile = require("../service/storage.service")
 const createPlayList = async (req, res) => {
   try {
     const { name, description } = req.body;
@@ -10,11 +11,23 @@ const createPlayList = async (req, res) => {
         message: "Playlist name are required",
       });
     }
-    const newPlaylist = new playListModel({
+    
+    let coverImageUrl = ""
+    if(req.file){
+      try {
+        const uploadResult = await uploadFile(req.file);
+        coverImageUrl = uploadResult.url
+      } catch (uploadError) {
+        console.error("Upload Error:", uploadError);
+        return res.status(500).json({ message: "Image upload failed" });
+      }
+    }
+    const newPlaylist = new playListModel({ 
       name,
       description,
       owner: userId,
       songs: [],
+      coverImage:coverImageUrl
     });
     await newPlaylist.save();
     return res.status(201).json({
@@ -48,7 +61,6 @@ const getPlaylistById = async (req, res) => {
     const { id } = req.params;
 
     const rawPlaylist = await playListModel.findById(id);
-    // console.log("🔍 Raw Playlist ,from DB:", rawPlaylist);
      if (!rawPlaylist) {
       return res.status(404).json({ message: "Playlist not found" });
     }
