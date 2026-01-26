@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 app.use("/api/auth", authRouter);
 app.use("/api", SongsRouter);
-app.use("/api", moodHistoryRouter);
+app.use("/api/history", moodHistoryRouter);
 app.use("/api", playHistoryRouter);
 app.use("/api/playlist", playlistRouter )
 

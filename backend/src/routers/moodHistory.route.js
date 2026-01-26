@@ -9,7 +9,7 @@ const router = express.Router();
 router.post("/mood", authMiddleware, createMood)
 
 // get mood history
-router.get("/mood/history", authMiddleware , getMoodHistory)
+router.get("/mood", authMiddleware , getMoodHistory)
 
 
 

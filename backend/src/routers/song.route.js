@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const {createSong,getSong} = require("../controllers/song.controller");
+const {createSong,getSong,getSongsByMood} = require("../controllers/song.controller");
 const {authMiddleware, adminMiddleware} = require("../middleware/auth.middleware")
 
 
@@ -14,6 +14,8 @@ router.post("/songs", authMiddleware , adminMiddleware,  upload.fields([
 ]), createSong)
 
 router.get("/songs", getSong)
+
+router.get("/songs/mood/:mood",getSongsByMood)
 
 
 module.exports = router;

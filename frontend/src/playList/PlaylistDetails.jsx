@@ -210,7 +210,7 @@ const PlaylistDetails = () => {
             <span className="text-xs font-bold uppercase tracking-wider text-white/80">
               Public Playlist
             </span>
-            <h1 className="text-4xl md:text-7xl font-bold mt-2 mb-4 text-white drop-shadow-lg truncate">
+            <h1 className="text-4xl md:text-7xl  font-bold mt-2 mb-4 text-white drop-shadow-lg ">
               {playlist.name}
             </h1>
             <p className="text-white/60 text-sm font-medium mb-4 max-w-xl line-clamp-2">

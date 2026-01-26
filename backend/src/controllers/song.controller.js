@@ -12,10 +12,10 @@ const createSong = async (req, res) => {
     const audioFile = req.files.audio[0];
     const imageFile = req.files.image[0];
 
-    const [ audioResult, imageResult] = await Promise.all([
+    const [audioResult, imageResult] = await Promise.all([
       uploadFile(audioFile),
-      uploadFile(imageFile)
-    ]) 
+      uploadFile(imageFile),
+    ]);
 
     const song = await songModel.create({
       title,
@@ -31,7 +31,7 @@ const createSong = async (req, res) => {
       song,
     });
   } catch (error) {
-     console.error("SONG UPLOAD ERROR ", error);
+    console.error("SONG UPLOAD ERROR ", error);
     return res.status(500).json({
       message: "song upload failed ❌",
     });
@@ -57,8 +57,34 @@ const getSong = async (req, res) => {
   }
 };
 
+const getSongsByMood = async (req, res) => {
+  try {
+    const { mood } = req.params;
+    if (!mood) {
+      return res.status(400).json({ message: "mood are required" });
+    }
+    const searchMood = mood.toLowerCase();
+    const songs = await songModel.find({
+      mood: searchMood,
+    });
+    if (!songs || songs.length === 0) {
+      return res.status(200).json({
+        message: `No songs found for ${searchMood}`,
+        songs: [],
+      });
+    }
+    return res.status(200).json({
+      message:`${searchMood} mood fetched successfully`,
+      songs
+    })
+  } catch (error) {
+    console.error("Mood Fetch Error:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
 
 module.exports = {
-    createSong,
-    getSong
-}
+  createSong,
+  getSong,
+  getSongsByMood
+};

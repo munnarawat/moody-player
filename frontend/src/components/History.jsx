@@ -2,7 +2,7 @@ import React from 'react'
 
 const History = () => {
   return (
-    <div>History</div>
+    <div className='w-full min-h-screen bg-black'></div>
   )
 }
 

@@ -9,6 +9,7 @@ import axios from "axios";
 import { playSong, setRecommendation } from "../store/songSlice";
 import AddToPlaylistModal from "../playList/AddToPlaylistModal";
 import SongsList from "../components/SongsList";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -18,39 +19,76 @@ const Home = () => {
   const [selectedSongId, setSelectedSongId] = useState(null);
 
   // 🎵 Function to Fetch Songs from Backend
-  const fetchSong = async (mood) => {
+  useEffect(() => {
+    fetchSong();
+  }, []);
+  const fetchSong = async () => {
     try {
       setLoading(true);
-      let url = "http://localhost:3000/api/songs";
-      if (mood && mood !== "default") {
-        url += `?mood=${mood}`;
-      }
-      const response = await axios.get(url);
-      if (response.data.song && response.data.song.length > 0) {
-        const fetchedSongs = response.data.song;
+      const response = await axios.get("http://localhost:3000/api/songs");
+
+      const fetchedSongs = response.data.song || [];
+
+      if (fetchedSongs.length > 0) {
         setSongs(fetchedSongs);
-        dispatch(setRecommendation(fetchedSongs));   
-        if(mood && mood !== "default"){
-          dispatch(playSong(fetchedSongs[0]));
-        }     
+        dispatch(setRecommendation(fetchedSongs));
       }
+      // console.log(response.data.song);
     } catch (error) {
       console.error("Error fetching songs:", error);
     } finally {
       setLoading(false);
     }
   };
-  
-  //  handleMoodChange
-  const handleMoodChange = (mood) => {
+
+  const handleAddToPlaylistClick = (e, songId) => {
+    e.stopPropagation();
+    setSelectedSongId(songId);
+  };
+  const handleMoodAction = async (mood, source) => {
+    if (!mood) return;
     const moodKey = mood.toLowerCase();
     setCurrentMood(MOOD_THEMES[moodKey] ? moodKey : "default");
-    fetchSong(moodKey);
+    toast.info(`Mood Detected: ${mood} (${source}) 🤖`);
+    try {
+      const token = localStorage.getItem("token");
+      const songRes = await axios.get(
+        `http://localhost:3000/api/songs/mood/${mood}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (token) {
+        try {
+          await axios.post(
+            "http://localhost:3000/api/history/mood",
+            {
+              mood: mood,
+              source: source,
+            },
+            { headers: { Authorization: `Bearer ${token}` } },
+          );
+          
+        } catch (historyError) {
+          console.error("History save failed (Non-fatal)", historyError);
+        }
+      }
+      const moodSongs = songRes.data.songs || songRes.data.song || [];
+      if (moodSongs.length > 0) {
+        setSongs(moodSongs); // Update List
+        dispatch(playSong(moodSongs[0])); // Play First Song
+        dispatch(setRecommendation(moodSongs)); // Update Queue
+        toast.success(`Playing ${mood} vibes! 🎵`);
+      } else {
+        toast.warn(`No songs found for ${mood} mood 😕`);
+      }
+    } catch (error) {
+      console.error("Mood Action Error:", error);
+      toast.error("Failed to process mood request ❌");
+    }
   };
-  const handleAddToPlaylistClick =(e,songId)=>{
-    e.stopPropagation();
-    setSelectedSongId(songId)
-  }
   useEffect(() => {
     fetchSong();
   }, []);
@@ -86,8 +124,16 @@ const Home = () => {
     blur-[60px] md:blur-[80px] lg:blur-[100px]
     pointer-events-none mix-blend-screen"
       />
-      <FaceExpression onMoodDetected={handleMoodChange} />
-      <MoodSelection onMoodSelect={handleMoodChange} />
+      <FaceExpression
+        onMoodDetected={(detectedMood) =>
+          handleMoodAction(detectedMood, "camera")
+        }
+      />
+      <MoodSelection
+        onMoodSelect={(selectedMood) =>
+          handleMoodAction(selectedMood, "manual")
+        }
+      />
       <TimeBasedSection />
       {/* dynamic song list */}
       <div className="mt-8 mb-24 px-2">
@@ -97,10 +143,18 @@ const Home = () => {
         {loading ? (
           <p className="text-white/50">Loading songs...</p>
         ) : (
-          <SongsList songs={songs} handleAddPlaylist={handleAddToPlaylistClick} handleSongClicked={handleSongClicked}/>
+          <SongsList
+            songs={songs}
+            handleAddPlaylist={handleAddToPlaylistClick}
+            handleSongClicked={handleSongClicked}
+          />
         )}
       </div>
-       <AddToPlaylistModal isOpen={ !!selectedSongId} songId={selectedSongId} onClose={()=>setSelectedSongId(null)} />
+      <AddToPlaylistModal
+        isOpen={!!selectedSongId}
+        songId={selectedSongId}
+        onClose={() => setSelectedSongId(null)}
+      />
     </motion.div>
   );
 };

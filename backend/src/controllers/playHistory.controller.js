@@ -20,7 +20,7 @@ const createPlayHIstory = async (req, res) => {
       });
     }
     const play = await playHistoryModel.create({
-      userId: req.user.id,
+      userId: req.user._id,
       songId,
       mood,
     });
@@ -42,7 +42,7 @@ const createPlayHIstory = async (req, res) => {
 const getPlayHistory = async (req,res) =>{
     try {
         const history = await playHistoryModel.find({
-            userId:req.user.id
+            userId:req.user._id
         })
         .populate("songId", "title artist audioUrl mood")
         .sort({playedAt: -1})

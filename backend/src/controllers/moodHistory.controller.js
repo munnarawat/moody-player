@@ -12,7 +12,7 @@ const createMood = async (req,res)=>{
         }
         // save mood history
          const moodEntry = await moodHistoryModel.create({
-            userId:req.user.id,
+            userId:req.user._id,
             mood,
             source:source || "face",
          });
@@ -39,13 +39,13 @@ const createMood = async (req,res)=>{
 const getMoodHistory = async (req,res)=>{
     try {
         const moods = await moodHistoryModel.find({
-            userId:req.user.id,
+            userId:req.user._id,
         }).sort({createdAt: -1 });
 
         return res.status(200).json({
             message:" mood fetch successfully🎉",
             count:moods.length,
-            moods
+            history:moods
         })
     } catch (error) {
         console.log("failed" , error);
