@@ -119,10 +119,14 @@ const Moods = () => {
         </motion.div>
       )}
       {/* section-2 timeLine-list */}
-      <div className="space-y-4 mt-20 pb-10 ">
-        <h3 className="text-lg font-bold text-white mb-2">Recent timeLine</h3>
+      <div className="space-y-4 custom-scroll relative mt-20 bg-zinc-900  max-h-screen overflow-hidden overflow-y-auto pb-10 ">
+        <div className="sticky top-0">
+          <h3 className="text-lg font-bold  bg-zinc-900 p-4  text-white mb-2">
+            Recent timeLine
+          </h3>
+        </div>
         {mood.length === 0 ? (
-          <div className="text-center text-white/40 py-20">
+          <div className="text-center  text-white/40 py-20">
             {" "}
             No mood History found yet!
           </div>
@@ -133,7 +137,7 @@ const Moods = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.05 }}
               key={item._id || index}
-              className="flex items-center justify-between bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/10 transition group">
+              className="flex items-center  justify-between bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/10 transition group">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-white/5 rounded-full group-hover:bg-white/10 transition">
                   {getMoodIcon(item.mood)}

@@ -49,7 +49,6 @@ const Home = () => {
     if (!mood) return;
     const moodKey = mood.toLowerCase();
     setCurrentMood(MOOD_THEMES[moodKey] ? moodKey : "default");
-    toast.info(`Mood Detected: ${mood} (${source}) 🤖`);
     try {
       const token = localStorage.getItem("token");
       const songRes = await axios.get(
@@ -80,7 +79,7 @@ const Home = () => {
         setSongs(moodSongs); // Update List
         dispatch(playSong(moodSongs[0])); // Play First Song
         dispatch(setRecommendation(moodSongs)); // Update Queue
-        toast.success(`Playing ${mood} vibes! 🎵`);
+       
       } else {
         toast.warn(`No songs found for ${mood} mood 😕`);
       }

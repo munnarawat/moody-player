@@ -40,7 +40,13 @@ const userSchema = new mongoose.Schema(
     lastDetectedMood:{
       type:String,
       enum:["happy", "sad","angry" ,"neutral", "surprised"]
-    }
+    },
+    likedSongs:[
+      {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:songs,
+      }
+    ]
   },
   {
     timestamps: true,
