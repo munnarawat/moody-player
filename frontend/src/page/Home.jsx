@@ -4,7 +4,7 @@ import MoodSelection from "../components/MoodSelection";
 import { MOOD_THEMES } from "../utils/moodConstants";
 import { motion } from "framer-motion";
 import TimeBasedSection from "../components/TimeBasedSection";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { playSong, setRecommendation } from "../store/songSlice";
 import AddToPlaylistModal from "../playList/AddToPlaylistModal";
@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const {user} = useSelector((state)=>state.auth)
   const [songs, setSongs] = useState([]);
   const [currentMood, setCurrentMood] = useState("default");
   const [loading, setLoading] = useState(false);
@@ -144,6 +145,7 @@ const Home = () => {
         ) : (
           <SongsList
             songs={songs}
+            user={user}
             handleAddPlaylist={handleAddToPlaylistClick}
             handleSongClicked={handleSongClicked}
           />

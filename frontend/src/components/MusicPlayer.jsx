@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Play,
   Pause,
@@ -11,17 +11,41 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { togglePlay, nextSong, prevSong,setRecommendation} from "../store/songSlice";
+import {
+  togglePlay,
+  nextSong,
+  prevSong,
+  setRecommendation,
+} from "../store/songSlice";
+import LikedButton from "./LikedButton";
 
 const MusicPlayer = () => {
   const dispatch = useDispatch();
   const { currentSong, isPlaying } = useSelector((state) => state.song);
+  const { user } = useSelector((state) => state.auth);
   const audioRef = useRef(null);
-
+  const [volume, setVolume] = useState(1);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
+
+  // if AlreadyLiked
+  const isSongLiked = useMemo(() => {
+    if (!user.likedSongs || !currentSong) return false;
+    return user.likedSongs.some((item) => {
+      if (typeof item === "string") {
+        return item === currentSong._id;
+      }
+      return item._id === currentSong._id;
+    });
+  }, [user, currentSong]);
+
+  // volume controller call
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
 
   // Initialize Audio Object once
   if (!audioRef.current) {
@@ -95,7 +119,7 @@ const MusicPlayer = () => {
   const handleNext = () => dispatch(nextSong());
   const handlePrev = () => dispatch(prevSong());
 
-  // ✅ Seek Function 
+  // ✅ Seek Function
   const handleSeek = (e) => {
     const width = e.currentTarget.clientWidth;
     const clickX = e.nativeEvent.offsetX;
@@ -104,7 +128,6 @@ const MusicPlayer = () => {
     audioRef.current.currentTime = newTime;
     setProgress((clickX / width) * 100);
   };
-
   if (!currentSong) return null;
   return (
     <motion.div
@@ -115,12 +138,14 @@ const MusicPlayer = () => {
       <div className="w-full h-20 bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between px-4 sm:px-8 shadow-2xl shadow-black/50">
         {/* LEFT: Song Info */}
         <div className="flex items-center gap-4 w-1/4">
-          <motion.div
-            className="image-container w-16 h-16 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 shrink-0">
+          <motion.div className="image-container w-16 h-16 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 shrink-0">
             <img
-              src={currentSong.imageUrl || "https://plus.unsplash.com/premium_photo-1676068243778-2652632e1f4c?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+              src={
+                currentSong.imageUrl ||
+                "https://plus.unsplash.com/premium_photo-1676068243778-2652632e1f4c?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              }
               alt="Art"
-              className={`w-full h-full object-cover transition-transform duration-500 ${isPlaying ? "animate-pulse":""}`}
+              className={`w-full h-full object-cover transition-transform duration-500 ${isPlaying ? "animate-pulse" : ""}`}
             />
           </motion.div>
 
@@ -132,17 +157,7 @@ const MusicPlayer = () => {
               {currentSong.artist}
             </p>
           </div>
-
-          <button onClick={() => setIsLiked(!isLiked)} className="ml-2">
-            <Heart
-              size={18}
-              className={`transition-colors ${
-                isLiked
-                  ? "text-green-500 fill-green-500"
-                  : "text-white/40 hover:text-white"
-              }`}
-            />
-          </button>
+          <LikedButton songId={currentSong._id} isAlreadyLiked={isSongLiked} />
         </div>
 
         {/* CENTER: Controls & Progress */}
@@ -189,8 +204,7 @@ const MusicPlayer = () => {
             {/* Clickable Progress Bar */}
             <div
               className="relative flex-1 h-1 bg-white/10 rounded-full cursor-pointer group"
-              onClick={handleSeek} // Click to seek
-            >
+              onClick={handleSeek}>
               <div
                 className="absolute top-0 left-0 h-full bg-linear-to-r from-indigo-500 to-purple-500 rounded-full group-hover:from-indigo-400 group-hover:to-purple-400"
                 style={{ width: `${progress}%` }}
@@ -209,12 +223,18 @@ const MusicPlayer = () => {
           </div>
         </div>
 
-        {/* RIGHT: Volume */}
+        {/* Volume Slider */}
         <div className="flex items-center justify-end gap-2 w-1/4">
           <Volume2 size={18} className="text-white/60" />
-          <div className="w-20 h-1 bg-white/10 rounded-full relative cursor-pointer group">
-            <div className="absolute h-full w-1/2 bg-white/60 rounded-full group-hover:bg-green-400 transition-colors" />
-          </div>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={(e) => setVolume(parseFloat(e.target.value))}
+            className="w-20 h-1 accent-green-500 cursor-pointer"
+          />
         </div>
       </div>
     </motion.div>

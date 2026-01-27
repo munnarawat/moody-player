@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import React from "react";
 import { Play, PlusCircle } from "lucide-react";
+import LikedButton from "./LikedButton";
 
-const SongsList = ({ handleSongClicked, songs, handleAddPlaylist }) => {
+const SongsList = ({ handleSongClicked, songs,user, handleAddPlaylist }) => {
+  const likedSongIds = user?.likedSongs || [];
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 px-4 mb-30 gap-4">
       {songs.length > 0 &&
@@ -29,6 +31,7 @@ const SongsList = ({ handleSongClicked, songs, handleAddPlaylist }) => {
               <div>
                 <h3 className="font-bold">{song.title}</h3>
                 <p className="text-sm text-white/60">{song.artist}</p>
+                <LikedButton isAlreadyLiked={likedSongIds.includes(song._id)} songId={song._id}/>
               </div>
             </div>
             <button

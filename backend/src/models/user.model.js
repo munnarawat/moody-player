@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
     likedSongs:[
       {
         type:mongoose.Schema.Types.ObjectId,
-        ref:songs,
+        ref:"songs",
       }
     ]
   },

@@ -6,10 +6,10 @@ const toggleLikeSongs = async (req, res) => {
     const userId = req.user._id;
 
     const user = await userModel.findById(userId);
-    const isLiked = user.likedSongs.includes(songId);
+    const isLiked = user.likedSongs.some(id => id && id.toString() === songId);
     if (isLiked) {
       user.likedSongs = user.likedSongs.filter(
-        (id) => id.toString() !== songId,
+        (id) =>id && id.toString() !== songId,
       );
       await user.save();
       return res.status(200).json({
