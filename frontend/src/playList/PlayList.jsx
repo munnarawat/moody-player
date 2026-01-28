@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Plus, Music, PlayCircle, Loader, Layers } from "lucide-react";
+import React, { use, useEffect, useState } from "react";
+import { Plus, Music, PlayCircle, Loader, Heart, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -9,9 +9,8 @@ import CreatePlaylist from "./CreatePlaylist";
 const PlayList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [playlists, setPlayLists] = useState([]);
-  const [openPlaylist , setIsOpenPlaylist] = useState(false);
-
-
+  const [openPlaylist, setIsOpenPlaylist] = useState(false);
+  const [likedSongs, setLikedSongs] = useState([]);
   // Fetch Playlists
   const fetchPlaylist = async () => {
     const token = localStorage.getItem("token");
@@ -32,15 +31,31 @@ const PlayList = () => {
       setIsLoading(false);
     }
   };
-
+  // likedSongs fetching
+  const fetchLikedSongs = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+    try {
+      const response = await axios.get("http://localhost:3000/api/likes", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setLikedSongs(response.data.likedSongs);
+    } catch (error) {
+      console.log("Error fetching liked songs ", error);
+    }
+  };
   useEffect(() => {
     fetchPlaylist();
+    fetchLikedSongs();
   }, []);
-   
-  const handleOpenPlaylist = ()=>{
-    setIsOpenPlaylist(true)
-  }
 
+  const handleOpenPlaylist = () => {
+    setIsOpenPlaylist(true);
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,7 +92,11 @@ const PlayList = () => {
         <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-purple-600/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px]" />
       </div>
-       <CreatePlaylist isOpen={openPlaylist} refreshPlaylists={fetchPlaylist}  isClose={()=>setIsOpenPlaylist(false)}/>
+      <CreatePlaylist
+        isOpen={openPlaylist}
+        refreshPlaylists={fetchPlaylist}
+        isClose={() => setIsOpenPlaylist(false)}
+      />
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header section */}
         <div className="header flex items-center justify-between ">
@@ -150,7 +169,6 @@ const PlayList = () => {
                 Create New
               </span>
             </motion.div>
-
             {/* Render Playlists */}
             {playlists &&
               playlists.map((items) => (
@@ -175,11 +193,10 @@ const PlayList = () => {
                           src={items.coverImage}
                           alt={items.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />         
+                        />
                       ) : (
                         <div className="w-full h-full bg-[#282828]">
-                          {(!items.songs ||
-                            items?.songs.length === 0) && (
+                          {(!items.songs || items?.songs.length === 0) && (
                             <div
                               className={`w-full h-full bg-linear-to-br from-indigo-500 to-purple-900 flex items-center justify-center group-hover:scale-105 transition-transform duration-500`}>
                               <Music size={50} className="text-white/40" />
@@ -228,6 +245,26 @@ const PlayList = () => {
                   </Link>
                 </motion.div>
               ))}
+            {likedSongs && likedSongs?.length > 0 && (
+              <Link to="/playlist/likes">
+                <motion.div
+                  variants={itemVariant}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="aspect-square flex flex-col items-center justify-center gap-4 bg-linear-to-r from-indigo-500 to-purple-900   rounded-2xl  hover:border-indigo-400/50 transition-all group cursor-pointer">
+                  <Heart size={60} className=" fill-white  transition-colors" />
+                </motion.div>
+                <div className="pl-2">
+                  <h2 className=" mt-4  font-bold  truncate text-lg">
+                    Liked songs{" "}
+                  </h2>
+                  <p className="text-sm text-white/50 flex items-center font-medium gap-1.5">
+                    <Music size={14} />
+                    {likedSongs ? likedSongs.length : 0} Songs
+                  </p>
+                </div>
+              </Link>
+            )}
           </motion.div>
         )}
       </div>
