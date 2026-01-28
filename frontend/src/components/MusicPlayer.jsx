@@ -31,8 +31,8 @@ const MusicPlayer = () => {
 
   // if AlreadyLiked
   const isSongLiked = useMemo(() => {
-    if (!user.likedSongs || !currentSong) return false;
-    return user.likedSongs.some((item) => {
+    if (!user?.likedSongs || !currentSong) return false;
+    return user?.likedSongs.some((item) => {
       if (typeof item === "string") {
         return item === currentSong._id;
       }

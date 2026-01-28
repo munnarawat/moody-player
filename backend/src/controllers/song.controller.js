@@ -74,17 +74,40 @@ const getSongsByMood = async (req, res) => {
       });
     }
     return res.status(200).json({
-      message:`${searchMood} mood fetched successfully`,
-      songs
-    })
+      message: `${searchMood} mood fetched successfully`,
+      songs,
+    });
   } catch (error) {
     console.error("Mood Fetch Error:", error);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
-
+const searchSongs = async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) {
+      return res.status(200).json({ songs: [] });
+    }
+    const songs = await songModel.find({
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { artist: { $regex: query, $options: "i" } },
+        { mood: { $regex: query, $options: "i" } },
+      ],
+    });
+    console.log(`✅ Found ${songs.length} matches for '${query}'`);
+    return res.status(200).json({
+      message: "search song fetched",
+      songs,
+    });
+  } catch (error) {
+    console.error("Search Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 module.exports = {
   createSong,
   getSong,
-  getSongsByMood
+  getSongsByMood,
+  searchSongs
 };

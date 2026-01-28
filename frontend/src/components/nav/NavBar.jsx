@@ -10,6 +10,7 @@ import {
   Music2,
   ChevronDown,
   Settings,
+  Search,
 } from "lucide-react";
 import { logOut } from "../../store/authSlice";
 import axios from "axios";
@@ -42,7 +43,6 @@ const NavBar = () => {
     { name: "Home", path: "/" },
     { name: "Moods", path: "/moods" },
     { name: "Playlists", path: "/playlist" },
-    { name: "History", path: "/history" },
   ];
   const handleLogOut = async () => {
     const token = localStorage.getItem("token");
@@ -115,6 +115,17 @@ const NavBar = () => {
             ) : (
               " "
             )}
+          </div>
+          {/* search bar */}
+          <div
+            className="group relative flex items-center bg-white/5 backdrop-blur-lg border border-white/10 rounded-full py-2.5  px-2 md:px-5 transition-all duration-300 focus-within:bg-black/40 focus-within:border-indigo-500/50 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+            <Search className="text-white/50 group-focus-within:text-indigo-400  transition-colors w-5 h-5 mr-3" />
+            <input
+              type="text"
+              className=" bg-transparent border-none focus:outline-none text-white text-sm w-20 md:w-30 lg:60 placeholder-white/30 group-focus-within:placeholder-white/50"
+              placeholder="Search songs, artists..."
+              onFocus={() => navigate("/search")}
+            />
           </div>
           {/* 3. AUTH & PROFILE SECTION */}
           <div className="hidden md:flex items-center gap-4">
@@ -214,7 +225,7 @@ const NavBar = () => {
               ))}
               {user && user.role === "admin" ? (
                 <Link
-                onClick={()=>setIsMobileMenuOpen(false)}
+                  onClick={() => setIsMobileMenuOpen(false)}
                   to="admin/upload"
                   className="text-2xl font-light text-white hover:text-indigo-400 transition-colors">
                   Dashboard
