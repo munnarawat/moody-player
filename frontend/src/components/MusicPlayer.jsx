@@ -134,11 +134,11 @@ const MusicPlayer = () => {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed -bottom-3.5  left-0 right-0 z-50 px-4 py-4 sm:px-6">
+      className="fixed -bottom-3.5  left-0 right-0 z-50  py-4 sm:px-6">
       <div className="w-full h-20 bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between px-4 sm:px-8 shadow-2xl shadow-black/50">
         {/* LEFT: Song Info */}
         <div className="flex items-center gap-4 w-1/4">
-          <motion.div className="image-container w-16 h-16 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 shrink-0">
+          <motion.div className="image-container w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 shrink-0">
             <img
               src={
                 currentSong.imageUrl ||
@@ -177,7 +177,7 @@ const MusicPlayer = () => {
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleTogglePlay}
-              className="play-pause w-10 h-10 rounded-full bg-white text-black flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] hover:scale-105 transition-all">
+              className="play-pause w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white  flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] hover:scale-105 transition-all">
               {isPlaying ? (
                 <Pause size={20} className="text-black fill-black" />
               ) : (
@@ -233,7 +233,7 @@ const MusicPlayer = () => {
             step="0.01"
             value={volume}
             onChange={(e) => setVolume(parseFloat(e.target.value))}
-            className="w-20 h-1 accent-green-500 cursor-pointer"
+            className="w-16 sm:w-20 h-1 accent-green-500 cursor-pointer"
           />
         </div>
       </div>

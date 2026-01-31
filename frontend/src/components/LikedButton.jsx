@@ -48,7 +48,7 @@ const LikedButton = ({ songId,isAlreadyLiked }) => {
       onClick={handleLiked}
       className="hover:scale-110 transition-transform cursor-pointer">
       <Heart
-        size={22}
+        size={20}
         className={
           liked ? "text-green-500 fill-green-500" : "text-white/60 hover:text-white"
         }
