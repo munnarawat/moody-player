@@ -61,10 +61,10 @@ const MoodSelection = ({ onMoodSelect }) => {
             transition={{ delay: index * 0.1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="min-w-[120px] h-[140px] relative rounded-2xl cursor-pointer overflow-hidden group bg-white/5 border border-white/10">
+            className="min-w-30 h-35 relative rounded-2xl cursor-pointer overflow-hidden group bg-white/5 border border-white/10">
             {/* Hover Gradient */}
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${mood.color} opacity-0 group-hover:opacity-30 transition-opacity duration-500`}
+              className={`absolute inset-0 bg-linear-to-br ${mood.color} opacity-0 group-hover:opacity-30 transition-opacity duration-500`}
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
               <span className="text-4xl">{mood.emoji}</span>

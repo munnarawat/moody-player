@@ -21,7 +21,20 @@ const createMood = async (req,res)=>{
         await userModel.findByIdAndUpdate(req.user.id,{
             lastDetectedMood : mood
         });
+    //  auto cleanup Logic (Keep only last 50)
+       const totalMoods = await moodHistoryModel.countDocuments({userId:req.user._id});
+         if(totalMoods > 50){
+            const moodToDelete = await moodHistoryModel.find({userId:req.user._id})
+            .sort({createdAt: -1})
+            .skip(50)
+            .select("_id")
 
+            if(moodToDelete.length >0){
+                const deleteIds = moodToDelete.map((doc)=>doc._id);
+                await moodHistoryModel.deleteMany({ _id: { $in: deleteIds } }); 
+                console.log(`🧹 Cleaned up ${deleteIds.length} old mood entries.`);
+            }
+         }
         return res.status(201).json({
             message:"mood saved successfully🎉",
             mood:moodEntry
@@ -40,7 +53,8 @@ const getMoodHistory = async (req,res)=>{
     try {
         const moods = await moodHistoryModel.find({
             userId:req.user._id,
-        }).sort({createdAt: -1 });
+        }).sort({createdAt: -1 })
+        .limit(50);
 
         return res.status(200).json({
             message:" mood fetch successfully🎉",

@@ -77,7 +77,7 @@ const NavBar = () => {
             ? "bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg py-3"
             : "bg-transparent py-5"
         }`}>
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 flex items-center justify-between">
           {/* 1. LOGO AREA */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="p-2 bg-indigo-500/20 rounded-lg group-hover:bg-indigo-500/40 transition-all">
@@ -118,11 +118,11 @@ const NavBar = () => {
           </div>
           {/* search bar */}
           <div
-            className="group relative flex items-center bg-white/5 backdrop-blur-lg border border-white/10 rounded-full py-2.5  px-2 md:px-5 transition-all duration-300 focus-within:bg-black/40 focus-within:border-indigo-500/50 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.3)]">
-            <Search className="text-white/50 group-focus-within:text-indigo-400  transition-colors w-5 h-5 mr-3" />
+            className="group relative flex items-center sm:bg-white/5 backdrop-blur-lg sm:border border-white/10 rounded-full py-2.5  px-2 md:px-5 transition-all duration-300 focus-within:bg-black/40 focus-within:border-indigo-500/50 focus-within:shadow-[0_0_20px_rgba(99,102,241,0.3)]">
+            <Search onClick={() => navigate("/search")} className="text-white/50 group-focus-within:text-indigo-400  transition-colors w-5 h-5 mr-3" />
             <input
               type="text"
-              className=" bg-transparent border-none focus:outline-none text-white text-sm w-20 md:w-30 lg:60 placeholder-white/30 group-focus-within:placeholder-white/50"
+              className=" hidden  md:flex bg-transparent border-none focus:outline-none text-white text-sm w-20 md:w-30 lg:60 placeholder-white/30 group-focus-within:placeholder-white/50"
               placeholder="Search songs, artists..."
               onFocus={() => navigate("/search")}
             />
