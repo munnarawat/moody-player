@@ -53,7 +53,6 @@ const SongsList = ({ handleSongClicked, songs, user, handleAddPlaylist }) => {
             className="group relative bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 p-3 rounded-2xl cursor-pointer transition-all duration-300 backdrop-blur-sm overflow-hidden">
             {/* Hover Glow Effect */}
             <div className="absolute inset-0 bg-linear-to-r from-indigo-500/0 via-white/5 to-indigo-500/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
-
             <div className="flex items-center gap-4">
               {/* Left: Image & Play Button */}
               <div className="relative shrink-0 w-16 h-16 rounded-xl overflow-hidden shadow-lg shadow-black/40">

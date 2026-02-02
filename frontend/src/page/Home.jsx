@@ -129,7 +129,7 @@ const Home = () => {
     pointer-events-none mix-blend-screen"
       />
       <Hero onStartClick={scrollToCamera} />
-      {/* 🔥 CAMERA SECTION WITH REF & STYLING */}
+      {/* 🔥 CAMERA SECTION */}
       <div
         ref={cameraSectionRef}
         className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-20">

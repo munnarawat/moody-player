@@ -5,68 +5,70 @@ import {
   SkipBack,
   SkipForward,
   Volume2,
-  Heart,
+  Volume1,
+  VolumeX,
   Repeat,
   Shuffle,
+  Maximize2,
+  Repeat1
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import {
   togglePlay,
   nextSong,
   prevSong,
-  setRecommendation,
+  toggleRepeat,
+  toggleShuffle,
 } from "../store/songSlice";
 import LikedButton from "./LikedButton";
-
 const MusicPlayer = () => {
   const dispatch = useDispatch();
-  const { currentSong, isPlaying } = useSelector((state) => state.song);
+  const { currentSong, isPlaying, isShuffle,repeatMode} = useSelector(
+    (state) => state.song,
+  );
   const { user } = useSelector((state) => state.auth);
   const audioRef = useRef(null);
+
   const [volume, setVolume] = useState(1);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // if AlreadyLiked
+  // Check if liked
   const isSongLiked = useMemo(() => {
     if (!user?.likedSongs || !currentSong) return false;
     return user?.likedSongs.some((item) => {
-      if (typeof item === "string") {
-        return item === currentSong._id;
-      }
-      return item._id === currentSong._id;
+      const id = typeof item === "string" ? item : item._id;
+      return id === currentSong._id;
     });
   }, [user, currentSong]);
 
-  // volume controller call
+  // Volume Effect
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
     }
   }, [volume]);
 
-  // Initialize Audio Object once
+  // Init Audio
   if (!audioRef.current) {
     audioRef.current = new Audio();
   }
 
-  // 1. 🎵 Handle Song Changes
+  // Handle Song Change
   useEffect(() => {
     if (currentSong) {
       audioRef.current.src = currentSong.audioUrl;
       audioRef.current.load();
       if (isPlaying) {
-        const playPromise = audioRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((error) => console.log("Playback error:", error));
-        }
+        audioRef.current.play().catch((e) => console.log("Playback error:", e));
       }
     }
   }, [currentSong]);
 
-  // 2. ⏯️ Handle Play/Pause Toggle
+  // Handle Play/Pause
   useEffect(() => {
     if (isPlaying) {
       audioRef.current.play().catch((e) => console.log("Play interrupted", e));
@@ -75,31 +77,28 @@ const MusicPlayer = () => {
     }
   }, [isPlaying]);
 
-  // 3. 🕒 Progress Bar & Time Update Logic (NEW)
+  // Progress Logic
   useEffect(() => {
     const audio = audioRef.current;
-
     const updateProgress = () => {
       const current = audio.currentTime;
       const dur = audio.duration;
       setCurrentTime(current);
       setDuration(dur);
-
-      // Calculate percentage
-      if (dur > 0) {
-        setProgress((current / dur) * 100);
+      if (dur > 0) setProgress((current / dur) * 100);
+    };
+    const handleEnded = () => {
+      if (repeatMode === "one") {
+        audio.currentTime = 0;
+        audio.play();
+      } else {
+        dispatch(nextSong());
       }
     };
 
-    const handleEnded = () => {
-      dispatch(nextSong());
-    };
-
-    // Event Listeners add karo
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("loadedmetadata", updateProgress);
     audio.addEventListener("ended", handleEnded);
-    // Cleanup function
     return () => {
       audio.removeEventListener("timeupdate", updateProgress);
       audio.removeEventListener("loadedmetadata", updateProgress);
@@ -114,127 +113,186 @@ const MusicPlayer = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  // ✅ Toggle Function
   const handleTogglePlay = () => dispatch(togglePlay());
   const handleNext = () => dispatch(nextSong());
   const handlePrev = () => dispatch(prevSong());
 
-  // ✅ Seek Function
   const handleSeek = (e) => {
     const width = e.currentTarget.clientWidth;
     const clickX = e.nativeEvent.offsetX;
     const newTime = (clickX / width) * audioRef.current.duration;
-
     audioRef.current.currentTime = newTime;
     setProgress((clickX / width) * 100);
   };
+
+  // Custom Volume Seek
+  const handleVolumeSeek = (e) => {
+    const width = e.currentTarget.clientWidth;
+    const clickX = e.nativeEvent.offsetX;
+    const newVol = Math.max(0, Math.min(1, clickX / width));
+    setVolume(newVol);
+  };
+
   if (!currentSong) return null;
+
   return (
     <motion.div
-      initial={{ y: 100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed -bottom-3.5  left-0 right-0 z-50  py-4 sm:px-6">
-      <div className="w-full h-20 bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-between px-4 sm:px-8 shadow-2xl shadow-black/50">
-        {/* LEFT: Song Info */}
-        <div className="flex items-center gap-4 w-1/4">
-          <motion.div className="image-container w-12 h-12 md:w-16 md:h-16 rounded-xl overflow-hidden shadow-lg shadow-purple-500/20 shrink-0">
-            <img
-              src={
-                currentSong.imageUrl ||
-                "https://plus.unsplash.com/premium_photo-1676068243778-2652632e1f4c?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              }
+      initial={{ y: 150, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 100, damping: 20 }}
+      className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-2 sm:px-6 sm:pb-6 pointer-events-none">
+      {/* Main Floating Capsule */}
+      <div
+        className="pointer-events-auto w-full max-w-5xl mx-auto h-20 sm:h-24 bg-black/80 backdrop-blur-2xl border border-white/10 rounded-4xl flex items-center justify-between  px-4 sm:px-8 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden relative group"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}>
+        {/* Glow Effect behind */}
+        <div className="absolute inset-0 bg-linear-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 pointer-events-none" />
+
+        {/* --- LEFT: Song Info & Art --- */}
+        <div className="flex items-center gap-4 w-1/3 min-w-0">
+          {/* Rotating Art */}
+          <motion.div
+            className="relative w-12 h-12 sm:w-16 sm:h-16 shrink-0"
+            style={{ perspective: "1000px" }}>
+            <motion.img
+              src={currentSong.imageUrl}
               alt="Art"
-              className={`w-full h-full object-cover transition-transform duration-500 ${isPlaying ? "animate-pulse" : ""}`}
+              animate={{ rotate: isPlaying ? 360 : 0 }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              className={`w-full h-full object-cover rounded-full border-2 border-white/10 shadow-lg ${isPlaying ? "shadow-indigo-500/30" : ""}`}
             />
+            {/* Center Dot for Vinyl look */}
+            <div className="absolute inset-0 m-auto w-3 h-3 bg-black rounded-full border border-white/20" />
           </motion.div>
 
-          <div className="hidden sm:block">
-            <h4 className="text-white font-bold text-sm truncate max-w-37.5">
+          <div className="hidden sm:flex flex-col overflow-hidden">
+            <h4 className="text-white font-bold text-sm truncate hover:text-indigo-400 transition-colors cursor-default">
               {currentSong.title}
             </h4>
-            <p className="text-white/40 text-xs truncate max-w-37.5">
+            <p className="text-white/40 text-xs truncate">
               {currentSong.artist}
             </p>
           </div>
-          <LikedButton songId={currentSong._id} isAlreadyLiked={isSongLiked} />
+
+          <div className="scale-90 sm:scale-100">
+            <LikedButton
+              songId={currentSong._id}
+              isAlreadyLiked={isSongLiked}
+            />
+          </div>
         </div>
 
-        {/* CENTER: Controls & Progress */}
-        <div className="flex flex-col items-center w-2/4">
-          {/* Control Buttons */}
-          <div className="flex items-center gap-6 mb-1">
-            <Shuffle
-              size={16}
-              className="text-xl text-zinc-500 hover:text-white transition-colors cursor-pointer"
-            />
-            <SkipBack
-              size={20}
+        {/* --- CENTER: Controls & Progress --- */}
+        <div className="flex flex-col items-center w-full max-w-md absolute left-1/2 -translate-x-1/2 bottom-2 sm:static sm:translate-x-0">
+          {/* Controls */}
+          <div className="flex items-center gap-4 sm:gap-6 mb-1 sm:mb-2">
+            <button
+              onClick={() => dispatch(toggleShuffle())}
+              className={`block transition-colors ${isShuffle ? "text-indigo-400" : "text-zinc-500 hover:text-white"}`}
+              title="Shuffle">
+              <Shuffle size={16} />
+              {/* Active Dot */}
+              {isShuffle && (
+                <div className="h-1 w-1 bg-indigo-400 rounded-full mx-auto mt-0.5" />
+              )}
+            </button>
+
+            <button
               onClick={handlePrev}
-              className="text-3xl text-zinc-300 hover:text-white hover:scale-105 transition-all cursor-pointer"
-            />
+              className="text-zinc-300 hover:text-white hover:scale-110 transition-all">
+              <SkipBack size={22} className="fill-current" />
+            </button>
 
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={handleTogglePlay}
-              className="play-pause w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white  flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] hover:scale-105 transition-all">
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] hover:scale-105 transition-all">
               {isPlaying ? (
-                <Pause size={20} className="text-black fill-black" />
+                <Pause size={20} className="fill-black" />
               ) : (
-                <Play size={20} className="text-black ml-1 fill-black" />
+                <Play size={20} className="ml-1 fill-black" />
               )}
             </motion.button>
 
-            <SkipForward
-              size={20}
+            <button
               onClick={handleNext}
-              className="text-3xl text-zinc-300 hover:text-white hover:scale-105 transition-all cursor-pointer"
-            />
-            <Repeat
-              size={16}
-              className="text-xl text-zinc-500 hover:text-white transition-colors cursor-pointer"
-            />
+              className="text-zinc-300 hover:text-white hover:scale-110 transition-all">
+              <SkipForward size={22} className="fill-current" />
+            </button>
+
+            <button
+              onClick={() => dispatch(toggleRepeat())}
+              className={`block transition-colors ${repeatMode !== "off" ? "text-indigo-400" : "text-zinc-500 hover:text-white"}`}
+              title="Repeat">
+              {repeatMode === "one" ? (
+                <Repeat1 size={16} />
+              ) : (
+                <Repeat size={16} />
+              )}
+              {/* Active Dot */}
+              {repeatMode !== "off" && (
+                <div className="h-1 w-1 bg-indigo-400 rounded-full mx-auto mt-0.5" />
+              )}
+            </button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="w-full max-w-md flex items-center gap-2 text-xs text-white/40 font-mono">
-            {/* Dynamic Current Time */}
-            <span className="w-10 text-right">{formatTime(currentTime)}</span>
+          {/* Progress Bar (Visible only on desktop/tablet nicely) */}
+          <div className="w-35 sm:w-full flex items-center gap-2 text-[10px] sm:text-xs text-white/40 font-mono">
+            <span className="hidden sm:inline w-8 text-right">
+              {formatTime(currentTime)}
+            </span>
 
-            {/* Clickable Progress Bar */}
             <div
-              className="relative flex-1 h-1 bg-white/10 rounded-full cursor-pointer group"
+              className="relative flex-1 h-1 sm:h-1.5 bg-white/10 rounded-full cursor-pointer group py-1"
               onClick={handleSeek}>
+              {/* Buffer Bar (Optional visual) */}
+              <div className="absolute top-1/2 -translate-y-1/2 left-0 h-1 sm:h-1.5 w-full rounded-full bg-white/5" />
+
+              {/* Active Bar with Gradient */}
               <div
-                className="absolute top-0 left-0 h-full bg-linear-to-r from-indigo-500 to-purple-500 rounded-full group-hover:from-indigo-400 group-hover:to-purple-400"
-                style={{ width: `${progress}%` }}
-              />
-              {/* Knob */}
-              <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ left: `${progress}%` }}
-              />
+                className="absolute top-1/2 -translate-y-1/2 left-0 h-1 sm:h-1.5 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full group-hover:from-indigo-400 group-hover:to-pink-400 transition-all"
+                style={{ width: `${progress}%` }}>
+                {/* Glowing End Cap */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] opacity-0 group-hover:opacity-100 transition-opacity scale-150" />
+              </div>
             </div>
 
-            {/* Dynamic Duration */}
-            <span className="w-10">
+            <span className="hidden sm:inline w-8">
               {formatTime(duration || currentSong.duration)}
             </span>
           </div>
         </div>
 
-        {/* Volume Slider */}
-        <div className="flex items-center justify-end gap-2 w-1/4">
-          <Volume2 size={18} className="text-white/60" />
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={(e) => setVolume(parseFloat(e.target.value))}
-            className="w-16 sm:w-20 h-1 accent-green-500 cursor-pointer"
-          />
+        {/* --- RIGHT: Volume --- */}
+        <div className="flex items-center justify-end gap-3 w-1/3 min-w-0">
+          <div className="hidden sm:flex items-center gap-2 group/vol">
+            <button
+              onClick={() => setVolume(volume === 0 ? 1 : 0)}
+              className="text-white/60 hover:text-white">
+              {volume === 0 ? (
+                <VolumeX size={18} />
+              ) : volume < 0.5 ? (
+                <Volume1 size={18} />
+              ) : (
+                <Volume2 size={18} />
+              )}
+            </button>
+
+            {/* Custom Volume Slider */}
+            <div
+              className="w-16 h-1 bg-white/10 rounded-full cursor-pointer relative overflow-hidden"
+              onClick={handleVolumeSeek}>
+              <div
+                className="absolute top-0 left-0 h-full bg-white rounded-full group-hover/vol:bg-indigo-400 transition-colors"
+                style={{ width: `${volume * 100}%` }}
+              />
+            </div>
+          </div>
+
+          <button className="text-white/60 hover:text-white transition-colors">
+            <Maximize2 size={18} />
+          </button>
         </div>
       </div>
     </motion.div>
