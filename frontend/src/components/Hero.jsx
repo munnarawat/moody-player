@@ -4,7 +4,7 @@ import { Sparkles, ArrowRight, Play, Camera } from "lucide-react";
 
 const Hero = ({ onStartClick }) => {
   return (
-    <div className="relative w-full min-h-125 flex items-center justify-center overflow-hidden bg-black pt-20">
+    <div className="relative w-full min-h-125 flex items-center justify-center overflow-hidden bg-transparent pt-20">
       {/* 🌟 1. Animated Background Blobs */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0 pointer-events-none">
         <div className="absolute top-20 left-1/4 w-72 h-72 bg-indigo-600/30 rounded-full blur-[100px] animate-pulse" />
@@ -63,7 +63,6 @@ const Hero = ({ onStartClick }) => {
               className="group-hover:translate-x-1 transition-transform"
             />
           </button>
-
           {/* Secondary CTA */}
           <button className="px-8 py-4 bg-white/5 border border-white/10 text-white font-semibold rounded-full text-lg hover:bg-white/10 transition-colors flex items-center gap-2">
             <Play size={18} className="fill-white" />
@@ -71,9 +70,6 @@ const Hero = ({ onStartClick }) => {
           </button>
         </motion.div>
       </div>
-
-      {/* 👇 Bottom Gradient Fade (Taaki niche camera section smooth dikhe) */}
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-linear-to-t from-black to-transparent" />
     </div>
   );
 };

@@ -150,11 +150,6 @@ const Home = () => {
           />
         </div>
       </div>
-      {/* <FaceExpression
-        onMoodDetected={(detectedMood) =>
-          handleMoodAction(detectedMood, "camera")
-        }
-      /> */}
       <MoodSelection
         onMoodSelect={(selectedMood) =>
           handleMoodAction(selectedMood, "manual")
