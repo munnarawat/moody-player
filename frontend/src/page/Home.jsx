@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FaceExpression from "../components/FaceExpression";
 import MoodSelection from "../components/MoodSelection";
 import { MOOD_THEMES } from "../utils/moodConstants";
@@ -10,10 +10,12 @@ import { playSong, setRecommendation } from "../store/songSlice";
 import AddToPlaylistModal from "../playList/AddToPlaylistModal";
 import SongsList from "../components/SongsList";
 import { toast } from "react-toastify";
+import Hero from "../components/Hero";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const {user} = useSelector((state)=>state.auth)
+  const { user } = useSelector((state) => state.auth);
+  const cameraSectionRef = useRef(null);
   const [songs, setSongs] = useState([]);
   const [currentMood, setCurrentMood] = useState("default");
   const [loading, setLoading] = useState(false);
@@ -70,7 +72,6 @@ const Home = () => {
             },
             { headers: { Authorization: `Bearer ${token}` } },
           );
-          
         } catch (historyError) {
           console.error("History save failed (Non-fatal)", historyError);
         }
@@ -80,7 +81,6 @@ const Home = () => {
         setSongs(moodSongs); // Update List
         dispatch(playSong(moodSongs[0])); // Play First Song
         dispatch(setRecommendation(moodSongs)); // Update Queue
-       
       } else {
         toast.warn(`No songs found for ${mood} mood 😕`);
       }
@@ -88,6 +88,10 @@ const Home = () => {
       console.error("Mood Action Error:", error);
       toast.error("Failed to process mood request ❌");
     }
+  };
+  // 2. Scroll function
+  const scrollToCamera = () => {
+    cameraSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   useEffect(() => {
     fetchSong();
@@ -124,11 +128,33 @@ const Home = () => {
     blur-[60px] md:blur-[80px] lg:blur-[100px]
     pointer-events-none mix-blend-screen"
       />
-      <FaceExpression
+      <Hero onStartClick={scrollToCamera} />
+      {/* 🔥 CAMERA SECTION WITH REF & STYLING */}
+      <div
+        ref={cameraSectionRef}
+        className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-20">
+        <div className="bg-zinc-900/40 border border-white/10 rounded-3xl p-6 md:p-10 backdrop-blur-md shadow-2xl">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-2">
+              Live Mood Detection
+            </h2>
+            <p className="text-white/50">
+              Let AI see how you feel and play the perfect track.
+            </p>
+          </div>
+
+          <FaceExpression
+            onMoodDetected={(detectedMood) =>
+              handleMoodAction(detectedMood, "camera")
+            }
+          />
+        </div>
+      </div>
+      {/* <FaceExpression
         onMoodDetected={(detectedMood) =>
           handleMoodAction(detectedMood, "camera")
         }
-      />
+      /> */}
       <MoodSelection
         onMoodSelect={(selectedMood) =>
           handleMoodAction(selectedMood, "manual")

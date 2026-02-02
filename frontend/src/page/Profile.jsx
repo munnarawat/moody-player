@@ -34,8 +34,6 @@ const Profile = () => {
       .toUpperCase()
       .substring(0, 2);
   };
-  console.log(user?.fullName.firstName);
-
   return (
     <div className="min-h-screen bg-black w-full text-white relative overflow-hidden py-24 px-6 pb-10">
       {/* Background Glows */}
