@@ -178,11 +178,6 @@ const NavBar = () => {
                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition">
                         <User size={16} /> Profile
                       </Link>
-                      <Link
-                        to="/settings"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition">
-                        <Settings size={16} /> Settings
-                      </Link>
                       <button
                         onClick={() => handleLogOut()}
                         className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition text-left">

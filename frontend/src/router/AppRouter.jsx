@@ -10,6 +10,7 @@ import AdminUpload from '../page/AdminUpload'
 import PlaylistDetails from '../playList/PlaylistDetails'
 import LikePlaylist from '../playList/LikePlaylist'
 import SearchPage from '../page/SearchPage'
+import Profile from '../page/Profile'
 
 const AppRouter = () => {
   return (
@@ -17,6 +18,7 @@ const AppRouter = () => {
         <Route path='/' element={<Home />} />
         <Route path='/moods' element={<Moods/>}/>
         <Route path='/search' element={<SearchPage/>}/>
+        <Route path='/profile' element={<Profile/>} />
         <Route path='/admin/upload' element={<AdminUpload/>}/>
         <Route path='/playList' element={<PlayList/>}/>
         <Route path='/playList/Likes' element={<LikePlaylist/>}/>
