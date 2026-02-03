@@ -84,7 +84,7 @@ const PlayList = () => {
       </div>
     );
   }
-
+  const isLibraryEmpty = playlists?.length === 0 && likedSongs?.length === 0;
   return (
     <div className="w-full min-h-screen bg-black overflow-hidden text-white relative pt-28 px-6 pb-20">
       {/* --- Background Subtle Glows --- */}
@@ -99,7 +99,7 @@ const PlayList = () => {
       />
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header section */}
-        <div className="header flex items-center justify-between ">
+        <div className="header mb-2 flex items-center justify-between ">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-purple-400 flex items-center gap-3">
               <Layers className=" text-indigo-400" />
@@ -126,7 +126,7 @@ const PlayList = () => {
         </div>
 
         {/* Main Content */}
-        {playlists && playlists.length === 0 ? (
+        {isLibraryEmpty ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
