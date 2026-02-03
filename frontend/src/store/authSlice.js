@@ -4,9 +4,17 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    isAuthenticated: false,
+    token:localStorage.getItem("token")|| null,
+    isAuthenticated:!!localStorage.getItem("token"),
   },
   reducers: {
+    loginSuccess:(state,action)=>{
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isAuthenticated = true;
+      localStorage.setItem("token", action.payload.token);
+
+    },
     setUser: (state, action) => {
       state.user = action.payload;
       state.isAuthenticated = true;
@@ -15,9 +23,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
     },
-    
-    // 🔥 FIXED REDUCER
-    updateUserLikedSongs: (state, action) => {
+      updateUserLikedSongs: (state, action) => {
       const { songId, isLiked } = action.payload;
 
       if (state.user) {
@@ -43,5 +49,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, logOut, updateUserLikedSongs } = authSlice.actions;
+export const {loginSuccess, setUser, logOut, updateUserLikedSongs } = authSlice.actions;
 export default authSlice.reducer;

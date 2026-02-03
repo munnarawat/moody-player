@@ -110,6 +110,7 @@ const loginController = async (req, res) => {
         userName: user.userName,
         email: user.email,
         fullName: user.fullName,
+        role:user.role,
       },
     });
   } catch (error) {

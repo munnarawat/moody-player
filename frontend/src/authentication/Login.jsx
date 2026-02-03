@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { User, Lock, ArrowRight, Music2, AlertCircle } from "lucide-react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setUser } from "../store/authSlice";
+import { loginSuccess, setUser } from "../store/authSlice";
 
 const Login = () => {
   const {
@@ -21,7 +21,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = async (data) => {
     setServerError("");
-    setIsLoading(false);
+    setIsLoading(true);
     const payload = {
       identifier: data.identifier,
       password: data.password,
@@ -30,18 +30,25 @@ const Login = () => {
       const response = await axios.post(
         "http://localhost:3000/api/auth/login",
         payload,
-        { withCredentials: true }
-      );      
+        { withCredentials: true },
+      );
       if (response.data.user) {
+        dispatch(
+          loginSuccess({
+            user: response.data.user,
+            token: response.data.token,
+          }),
+        );
         dispatch(setUser(response.data.user));
-        localStorage.setItem("token", response.data.token)
+        localStorage.setItem("token", response.data.token);
         navigate("/");
+        console.log("LOGIN RESPONSE:", response.data);
       }
-      
     } catch (error) {
       console.log(error);
       const errorMessage =
-        error.response?.data?.message || "Something went wrong!";
+        error.response?.data?.message ||
+        "Network error. Please try again later.";
       setServerError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -150,9 +157,8 @@ const Login = () => {
             whileTap={{ scale: 0.98 }}
             type="submit"
             className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-indigo-600/40 transition-all flex items-center justify-center gap-2">
-              {isLoading?"Logging in..":"Log IN"}
-              {!isLoading && <ArrowRight size={18} />}
-             
+            {isLoading ? "Logging in.." : "Log IN"}
+            {!isLoading && <ArrowRight size={18} />}
           </motion.button>
         </form>
 
