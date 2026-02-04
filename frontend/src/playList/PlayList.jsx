@@ -186,8 +186,6 @@ const PlayList = () => {
                           <PlayCircle size={32} fill="white" />
                         </motion.div>
                       </div>
-
-                      {/* ✅ FIX 2: Check 'coverImage' instead of 'cover' */}
                       {items.coverImage ? (
                         <img
                           src={items.coverImage}
@@ -234,7 +232,6 @@ const PlayList = () => {
                         </div>
                       )}
                     </div>
-                    {/* ✅ FIX 3: Use 'name' and 'songs.length' */}
                     <h3 className="font-bold text-lg truncate group-hover:text-indigo-300 transition-colors capitalize">
                       {items.name}
                     </h3>

@@ -13,11 +13,12 @@ import {
   MinusCircle,
   Loader,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { playSong, setRecommendation } from "../store/songSlice";
 import { toast } from "react-toastify";
 import SongDuration from "../components/SongDuration";
+import Alert from "./Alert";
 
 const PlaylistDetails = () => {
   const { id } = useParams();
@@ -26,6 +27,8 @@ const PlaylistDetails = () => {
   const navigate = useNavigate();
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [showAlert, setShowAlert] = useState(false);
   // Fetch Single Playlist
   useEffect(() => {
     const fetchPlaylistDetails = async () => {
@@ -62,8 +65,11 @@ const PlaylistDetails = () => {
     }
   };
   // handle delete playlist
-  const handleDeletePlaylist = async () => {
-    if (!window.confirm("Are you sure you want delete your play list")) return;
+  const handleDeleteClick = () => {
+    setShowAlert(true);
+  };
+
+  const confirmDelete = async () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.delete(
@@ -74,11 +80,13 @@ const PlaylistDetails = () => {
           },
         },
       );
+      setShowAlert(false)
       toast.success("Playlist delete Successfully 🗑️");
       navigate("/");
     } catch (error) {
       console.error("Delete error:", error);
       toast.error("Failed to delete playlist");
+      setShowAlert(false);
     }
   };
   // handleRemoveSong
@@ -98,14 +106,14 @@ const PlaylistDetails = () => {
       toast.error("Failed to remove song");
     }
   };
-  
-  const formatDuration =(seconds)=>{
-    if(!seconds) return "0:00";
-    const min = Math.floor(seconds/60);
-    const sec = Math.floor(seconds%60);
-    return `${min}:${sec < 10 ? "0" :""}${sec} `
-  }
-  
+
+  const formatDuration = (seconds) => {
+    if (!seconds) return "0:00";
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${min}:${sec < 10 ? "0" : ""}${sec} `;
+  };
+
   if (loading) {
     return (
       <div className="h-screen flex items-center justify-center bg-black text-white">
@@ -119,8 +127,15 @@ const PlaylistDetails = () => {
       <div className="text-white text-center pt-20">Playlist not found 😕</div>
     );
   }
+  
   return (
     <div className="min-h-screen bg-black   text-white pb-40">
+      {/* show Alert section  */}
+      <AnimatePresence>
+        {showAlert && (
+          <Alert onCancel={()=>setShowAlert(false)} onConfirm={confirmDelete}/>
+        )}
+      </AnimatePresence>
       {/* --- HERO SECTION (Blur Background) --- */}
       <div className="relative w-full md:h-90 pt-20  overflow-hidden  ">
         {/* Blurred Background Image */}
@@ -228,7 +243,7 @@ const PlaylistDetails = () => {
               <span>{playlist.songs?.length || 0} songs</span>
             </div>
             <button
-              onClick={handleDeletePlaylist}
+              onClick={handleDeleteClick}
               className="flex items-center gap-2 mt-1 px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-full transition text-sm font-bold border border-red-500/30">
               <Trash2 size={16} /> Delete Playlist
             </button>
@@ -318,8 +333,10 @@ const PlaylistDetails = () => {
                     <MinusCircle size={20} />
                   </button>
                   <span className="text-sm text-white/50 group-hover:hidden">
-                    {song.duration ?(formatDuration(song.duration)):(
-                      <SongDuration url={song.audioUrl||song.url}/>
+                    {song.duration ? (
+                      formatDuration(song.duration)
+                    ) : (
+                      <SongDuration url={song.audioUrl || song.url} />
                     )}
                   </span>
                 </div>
@@ -334,6 +351,7 @@ const PlaylistDetails = () => {
           )}
         </div>
       </div>
+
     </div>
   );
 };
