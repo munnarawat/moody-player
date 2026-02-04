@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { Plus, Music, PlayCircle, Loader, Heart, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -26,7 +26,8 @@ const PlayList = () => {
       });
       setPlayLists(response.data.playlists);
     } catch (error) {
-      console.log("Error fetching playlist ", error);
+       console.log("Error fetching playlist ", error);
+      toast.error("Error fetching playlist ", error);
     } finally {
       setIsLoading(false);
     }

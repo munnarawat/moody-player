@@ -132,23 +132,23 @@ const Moods = () => {
       </motion.div>
 
       {/* 📊 Quick Stats Cards */}
-      <div className="grid grid-cols-2 gap-4 mb-8">
-        <div className="bg-zinc-900/50 border border-white/5 p-4 rounded-xl flex items-center gap-4">
+      <div className="grid grid-cols-2  gap-3 sm:gap-4 mb-8">
+        <div className="bg-zinc-900/50 border border-white/5 p-2 sm:p-4 rounded-xl flex items-center gap-4">
           <div className="p-3 bg-indigo-500/20 rounded-full text-indigo-400">
             <Activity size={24} />
           </div>
           <div>
             <p className="text-white/40 text-xs uppercase">Total Checks</p>
-            <h3 className="text-2xl font-bold">{totalScans}</h3>
+            <h3 className=" text-lg sm:text-2xl font-bold">{totalScans}</h3>
           </div>
         </div>
-        <div className="bg-zinc-900/50 border border-white/5 p-4 rounded-xl flex items-center gap-4">
+        <div className="bg-zinc-900/50 border border-white/5 p-2 sm:p-4 rounded-xl flex items-center gap-4">
           <div className="p-3 bg-pink-500/20 rounded-full text-pink-400">
             <Heart size={24} />
           </div>
           <div>
             <p className="text-white/40 text-xs uppercase">Top Mood</p>
-            <h3 className="text-2xl font-bold">{topMood}</h3>
+            <h3 className=" text-lg sm:text-2xl  font-bold">{topMood}</h3>
           </div>
         </div>
       </div>

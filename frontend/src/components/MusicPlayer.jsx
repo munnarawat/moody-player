@@ -27,7 +27,7 @@ import FullScreenPlayer from "./FullScreenPlayer";
 const MusicPlayer = () => {
   const dispatch = useDispatch();
   const { currentSong, isPlaying, isShuffle, repeatMode } = useSelector(
-    (state) => state.song
+    (state) => state.song,
   );
   const { user } = useSelector((state) => state.auth);
   const audioRef = useRef(null);
@@ -153,15 +153,13 @@ const MusicPlayer = () => {
         initial={{ y: 150, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-2 sm:px-6 sm:pb-6 pointer-events-none"
-      >
+        className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-2 sm:px-6 sm:pb-6 pointer-events-none">
         {/* Main Floating Capsule */}
         <div
           onClick={() => setIsFullScreen(true)}
           className="pointer-events-auto w-full max-w-5xl mx-auto h-20 sm:h-24 bg-black/80 backdrop-blur-2xl border border-white/10 rounded-4xl flex items-center justify-between px-4 sm:px-8 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden relative group cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+          onMouseLeave={() => setIsHovered(false)}>
           {/* Glow Effect behind */}
           <div className="absolute inset-0 bg-linear-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 pointer-events-none" />
 
@@ -170,8 +168,7 @@ const MusicPlayer = () => {
             {/* Rotating Art */}
             <motion.div
               className="relative w-12 h-12 sm:w-16 sm:h-16 shrink-0"
-              style={{ perspective: "1000px" }}
-            >
+              style={{ perspective: "1000px" }}>
               <motion.img
                 src={currentSong.imageUrl}
                 alt="Art"
@@ -209,12 +206,15 @@ const MusicPlayer = () => {
             {/* Controls */}
             <div className="flex items-center gap-4 sm:gap-6 mb-1 sm:mb-2">
               <button
-                onClick={(e) => handleAction(e, () => dispatch(toggleShuffle()))}
+                onClick={(e) =>
+                  handleAction(e, () => dispatch(toggleShuffle()))
+                }
                 className={`hidden sm:block transition-colors ${
-                  isShuffle ? "text-indigo-400" : "text-zinc-500 hover:text-white"
+                  isShuffle
+                    ? "text-indigo-400"
+                    : "text-zinc-500 hover:text-white"
                 }`}
-                title="Shuffle"
-              >
+                title="Shuffle">
                 <Shuffle size={16} />
                 {isShuffle && (
                   <div className="h-1 w-1 bg-indigo-400 rounded-full mx-auto mt-0.5" />
@@ -223,16 +223,14 @@ const MusicPlayer = () => {
 
               <button
                 onClick={(e) => handleAction(e, handlePrev)}
-                className="text-zinc-300 hover:text-white hover:scale-110 transition-all"
-              >
+                className="text-zinc-300 hover:text-white hover:scale-110 transition-all">
                 <SkipBack size={22} className="fill-current" />
               </button>
 
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={(e) => handleAction(e, handleTogglePlay)}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] hover:scale-105 transition-all"
-              >
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] hover:scale-105 transition-all">
                 {isPlaying ? (
                   <Pause size={20} className="fill-black" />
                 ) : (
@@ -242,8 +240,7 @@ const MusicPlayer = () => {
 
               <button
                 onClick={(e) => handleAction(e, handleNext)}
-                className="text-zinc-300 hover:text-white hover:scale-110 transition-all"
-              >
+                className="text-zinc-300 hover:text-white hover:scale-110 transition-all">
                 <SkipForward size={22} className="fill-current" />
               </button>
 
@@ -254,8 +251,7 @@ const MusicPlayer = () => {
                     ? "text-indigo-400"
                     : "text-zinc-500 hover:text-white"
                 }`}
-                title="Repeat"
-              >
+                title="Repeat">
                 {repeatMode === "one" ? (
                   <Repeat1 size={16} />
                 ) : (
@@ -278,13 +274,11 @@ const MusicPlayer = () => {
 
               <div
                 className="relative flex-1 h-1 sm:h-1.5 bg-white/10 rounded-full cursor-pointer group py-1"
-                onClick={handleSeek}
-              >
+                onClick={handleSeek}>
                 <div className="absolute top-1/2 -translate-y-1/2 left-0 h-1 sm:h-1.5 w-full rounded-full bg-white/5" />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 left-0 h-1 sm:h-1.5 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full group-hover:from-indigo-400 group-hover:to-pink-400 transition-all"
-                  style={{ width: `${progress}%` }}
-                >
+                  style={{ width: `${progress}%` }}>
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 sm:w-3 sm:h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] opacity-0 group-hover:opacity-100 transition-opacity scale-150" />
                 </div>
               </div>
@@ -299,13 +293,11 @@ const MusicPlayer = () => {
           <div className="flex items-center justify-end gap-3 w-1/3 min-w-0">
             {/* Volume Container - Stop Propagation Here */}
             <div
-              onClick={(e) => e.stopPropagation()} 
-              className="hidden sm:flex items-center gap-2 group/vol"
-            >
+              onClick={(e) => e.stopPropagation()}
+              className="hidden sm:flex items-center gap-2 group/vol">
               <button
                 onClick={() => setVolume(volume === 0 ? 1 : 0)}
-                className="text-white/60 hover:text-white"
-              >
+                className="text-white/60 hover:text-white">
                 {volume === 0 ? (
                   <VolumeX size={18} />
                 ) : volume < 0.5 ? (
@@ -317,8 +309,7 @@ const MusicPlayer = () => {
               {/* Custom Volume Slider */}
               <div
                 className="w-16 h-1 bg-white/10 rounded-full cursor-pointer relative overflow-hidden"
-                onClick={handleVolumeSeek}
-              >
+                onClick={handleVolumeSeek}>
                 <div
                   className="absolute top-0 left-0 h-full bg-white rounded-full group-hover/vol:bg-indigo-400 transition-colors"
                   style={{ width: `${volume * 100}%` }}
@@ -328,8 +319,7 @@ const MusicPlayer = () => {
 
             <button
               onClick={(e) => handleAction(e, () => setIsFullScreen(true))}
-              className="text-white/60 hover:text-white transition-colors"
-            >
+              className="text-white/60 hover:text-white transition-colors">
               <Maximize2 size={18} />
             </button>
           </div>
@@ -344,6 +334,8 @@ const MusicPlayer = () => {
             duration={duration}
             currentTime={currentTime}
             onSeek={handleSeek}
+            volume={volume}
+            onVolumeChange={setVolume}
           />
         )}
       </AnimatePresence>
