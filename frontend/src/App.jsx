@@ -8,6 +8,7 @@ import MusicPlayer from "./components/MusicPlayer";
 import Footer from "./page/Footer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MobileNav from "./components/nav/MobileNav";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,9 +23,9 @@ const App = () => {
       }
       try {
         const response = await axios.get("http://localhost:3000/api/auth/", {
-         headers:{
-          Authorization:`Bearer ${token}`
-         }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         if (response.data.user) {
           dispatch(setUser(response.data.user));
@@ -49,8 +50,13 @@ const App = () => {
     <div className="w-full h-full bg-black">
       <NavBar />
       <AppRouter />
-      <MusicPlayer />
       <Footer />
+      <div className=" z-999 fixed bottom-0 w-full">
+        <MusicPlayer />
+        <span className="block sm:hidden">
+          <MobileNav />
+        </span>
+      </div>
       <ToastContainer
         position="bottom-right"
         autoClose={2000}
@@ -61,8 +67,8 @@ const App = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark" 
-        transition: Bounce
+        theme="dark"
+        transition:Bounce
       />
     </div>
   );

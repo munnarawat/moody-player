@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
+    "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/vite": "^4.1.18",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",

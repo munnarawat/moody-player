@@ -9,7 +9,6 @@ import {
   VolumeX,
   Repeat,
   Shuffle,
-  Maximize2,
   Repeat1,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -316,12 +315,6 @@ const MusicPlayer = () => {
                 />
               </div>
             </div>
-
-            <button
-              onClick={(e) => handleAction(e, () => setIsFullScreen(true))}
-              className="text-white/60 hover:text-white transition-colors">
-              <Maximize2 size={18} />
-            </button>
           </div>
         </div>
       </motion.div>

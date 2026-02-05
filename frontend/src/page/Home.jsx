@@ -131,6 +131,7 @@ const Home = () => {
       <Hero onStartClick={scrollToCamera} />
       {/* 🔥 CAMERA SECTION */}
       <div
+      id="mood-scanner"
         ref={cameraSectionRef}
         className="max-w-7xl mx-auto px-4 md:px-6 py-10 md:py-20">
         <div className="bg-zinc-900/40 border border-white/10 rounded-3xl p-6 md:p-10 backdrop-blur-md shadow-2xl">

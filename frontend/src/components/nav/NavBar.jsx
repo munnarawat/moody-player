@@ -120,12 +120,6 @@ const NavBar = () => {
           {/* 3. RIGHT SIDE ACTIONS */}
           <div className="flex items-center gap-3 sm:gap-4">
             {/* SEARCH BAR (Responsive Logic) */}
-            {/* Mobile: Just Icon */}
-            <button
-              onClick={() => navigate("/search")}
-              className="md:hidden p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors">
-              <Search size={22} />
-            </button>
 
             {/* Desktop: Full Bar */}
             <div className="hidden md:flex group relative items-center bg-white/5 border border-white/10 rounded-full py-2 px-4 transition-all duration-300 w-48 focus-within:w-64 focus-within:bg-black/40 focus-within:border-indigo-500/50 focus-within:shadow-[0_0_15px_rgba(99,102,241,0.2)]">
