@@ -152,7 +152,7 @@ const MusicPlayer = () => {
         initial={{ y: 150, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-2 sm:px-6 sm:pb-6 pointer-events-none">
+        className=" bottom-0 left-0 right-0 z-50 px-2 pb-2 sm:px-6 sm:pb-6 pointer-events-none">
         {/* Main Floating Capsule */}
         <div
           onClick={() => setIsFullScreen(true)}
