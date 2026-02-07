@@ -10,8 +10,10 @@ import {
   Calendar,
   MoveLeft,
   Trash2,
+  ArrowLeft,
   MinusCircle,
   Loader,
+  
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -129,7 +131,13 @@ const PlaylistDetails = () => {
   }
   
   return (
-    <div className="min-h-screen bg-black   text-white pb-40">
+    <div className="min-h-screen bg-black relative overflow-hidden text-white pb-40">
+      {/* navigation button */}
+      <button
+        onClick={() => navigate(-1)}
+        className=" absolute text-white top-18 w-fit left-5 z-999 p-2 bg-black/30 rounded-full cursor-pointer hover:bg-white/10 hover:scale-110 duration-300  ">
+        <ArrowLeft size={20} />
+      </button>
       {/* show Alert section  */}
       <AnimatePresence>
         {showAlert && (
@@ -267,7 +275,7 @@ const PlaylistDetails = () => {
       </div>
 
       {/* --- SONG LIST SECTION --- */}
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="max-w-7xl mx-auto sm:px-8">
         {/* Table Header */}
         <div className="grid grid-cols-[auto_1fr_auto_auto] gap-4 text-sm text-white/50 border-b border-white/10 pb-2 mb-4 px-4">
           <span>#</span>

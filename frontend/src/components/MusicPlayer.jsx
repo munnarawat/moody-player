@@ -267,7 +267,7 @@ const MusicPlayer = () => {
               className="w-35 sm:w-full flex items-center gap-2 text-[10px] sm:text-xs text-white/40 font-mono"
               onClick={(e) => e.stopPropagation()} // Stop propagation on progress container
             >
-              <span className="hidden sm:inline w-8 text-right">
+              <span className="inline w-8 text-right">
                 {formatTime(currentTime)}
               </span>
 
@@ -282,7 +282,7 @@ const MusicPlayer = () => {
                 </div>
               </div>
 
-              <span className="hidden sm:inline w-8">
+              <span className="inline w-8">
                 {formatTime(duration || currentSong.duration)}
               </span>
             </div>
@@ -293,7 +293,7 @@ const MusicPlayer = () => {
             {/* Volume Container - Stop Propagation Here */}
             <div
               onClick={(e) => e.stopPropagation()}
-              className="hidden sm:flex items-center gap-2 group/vol">
+              className="flex items-center gap-2 group/vol">
               <button
                 onClick={() => setVolume(volume === 0 ? 1 : 0)}
                 className="text-white/60 hover:text-white">

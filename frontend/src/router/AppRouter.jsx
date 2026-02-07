@@ -11,6 +11,7 @@ import PlaylistDetails from '../playList/PlaylistDetails'
 import LikePlaylist from '../playList/LikePlaylist'
 import SearchPage from '../page/SearchPage'
 import Profile from '../page/Profile'
+import PlaylistPage from '../page/PlaylistPage'
 
 const AppRouter = () => {
   return (
@@ -19,8 +20,9 @@ const AppRouter = () => {
         <Route path='/moods' element={<Moods/>}/>
         <Route path='/search' element={<SearchPage/>}/>
         <Route path='/profile' element={<Profile/>} />
+        <Route path='/playlist' element={<PlaylistPage/>} />
         <Route path='/admin/upload' element={<AdminUpload/>}/>
-        <Route path='/playList' element={<PlayList/>}/>
+        <Route path='/library' element={<PlayList/>}/>
         <Route path='/playList/Likes' element={<LikePlaylist/>}/>
         <Route path='/playList/:id' element={<PlaylistDetails/>}/>
         <Route path='/login' element={<Login/>}/>

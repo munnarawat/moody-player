@@ -10,16 +10,19 @@ import {
   MoveLeft,
   Trash2,
   MinusCircle,
+  ArrowLeft,
   Loader,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import SongDuration from "../components/SongDuration";
 import { playSong, setRecommendation } from "../store/songSlice";
+import { useNavigate } from "react-router-dom";
 const LikePlaylist = () => {
   const dispatch = useDispatch();
   const [likedSongs, setLikedSongs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
   // likedSongs fetching
@@ -46,7 +49,7 @@ const LikePlaylist = () => {
     fetchLikedSongs();
   }, []);
 
-//   handlePlaySong
+  //   handlePlaySong
   const handlePlaySong = (songId) => {
     dispatch(playSong(songId));
     if (likedSongs) {
@@ -74,6 +77,12 @@ const LikePlaylist = () => {
   }
   return (
     <div className="min-h-screen w-full bg-black pb-40">
+      {/* navigation button */}
+      <button
+        onClick={() => navigate(-1)}
+        className=" absolute text-white top-18 w-fit left-5 z-999 p-2 bg-black/30 rounded-full cursor-pointer hover:bg-white/10 hover:scale-110 duration-300  ">
+        <ArrowLeft size={20} />
+      </button>
       {/* top section */}
       <div className="relative w-full md:h-90 pt-20  overflow-hidden ">
         <div className="absolute bg-linear-to-b from-indigo-500 to-purple-900 inset-0 bg-cover  bg-center blur-3xl opacity-50 scale-110" />
@@ -114,7 +123,9 @@ const LikePlaylist = () => {
       </div>
       {/* --- CONTROLS SECTION --- */}
       <div className="max-w-7xl mx-auto px-8 py-6  flex items-center gap-6">
-        <button onClick={handlePlayAll} className="w-14 h-14 rounded-full bg-indigo-500 hover:bg-indigo-400 flex items-center justify-center hover:scale-105 transition shadow-lg shadow-indigo-500/30 text-black">
+        <button
+          onClick={handlePlayAll}
+          className="w-14 h-14 rounded-full bg-indigo-500 hover:bg-indigo-400 flex items-center justify-center hover:scale-105 transition shadow-lg shadow-indigo-500/30 text-black">
           <Play size={28} fill="currentColor" className="ml-1" />
         </button>
         <button className="text-white/50 hover:text-white transition">
@@ -153,7 +164,6 @@ const LikePlaylist = () => {
                     className="hidden group-hover:block ml-1"
                   />
                 </div>
-
                 {/* Song Info */}
                 <div className="flex items-center gap-4">
                   {/* Song Image */}

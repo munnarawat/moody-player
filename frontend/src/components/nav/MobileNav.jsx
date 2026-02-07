@@ -11,7 +11,7 @@ const MobileNav = () => {
   const navItems = [
     { path: "/", name: "Home", icon: Home },
     { path: "/search", name: "Search", icon: Search },
-    { path: "/Playlist", name: "Library", icon: Library },
+    { path: "/library", name: "Library", icon: Library },
     {
       path: user ? "profile" : "/login",
       name: user ? "profile" : "LogIn",

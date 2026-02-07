@@ -48,6 +48,7 @@ const NavBar = () => {
     { name: "Home", path: "/" },
     { name: "Moods", path: "/moods" },
     { name: "Playlists", path: "/playlist" },
+    {name:"Library" , path:"/library"}
   ];
 
   const handleLogOut = async () => {
