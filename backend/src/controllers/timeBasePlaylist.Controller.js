@@ -86,9 +86,9 @@ const addSongToPlaylist = async (req, res) => {
       .findByIdAndUpdate(
         playlistId,
         {
-          $addToSet:{
-            songs:{$each: songIds}
-          }
+          $addToSet: {
+            songs: { $each: songIds },
+          },
         },
         { new: true },
       )
@@ -111,8 +111,31 @@ const addSongToPlaylist = async (req, res) => {
     });
   }
 };
+// ... baaki imports ke sath
+
+const getPlaylistById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const playlist = await timeBasePlayListModel.findById(id).populate("songs");
+
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    return res.status(200).json({
+      message: "Playlist fetched",
+      data: playlist,
+    });
+  } catch (error) {
+    console.error("Error fetching single playlist:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
+  }
+};
 module.exports = {
   createTimeBasePlaylist,
   getTimeBasePlaylist,
-  addSongToPlaylist
+  addSongToPlaylist,
+  getPlaylistById,
 };

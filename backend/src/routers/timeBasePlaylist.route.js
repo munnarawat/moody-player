@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {createTimeBasePlaylist, getTimeBasePlaylist, addSongToPlaylist} = require("../controllers/timeBasePlaylist.Controller")
+const {createTimeBasePlaylist, getTimeBasePlaylist, addSongToPlaylist,getPlaylistById} = require("../controllers/timeBasePlaylist.Controller")
 const multer = require("multer");
 
 const upload = multer({storage:multer.memoryStorage});
@@ -11,7 +11,9 @@ router.post("/create", upload.single("coverImage"),createTimeBasePlaylist);
 // add song playlist 
 router.post("/add-song", addSongToPlaylist)
 // get
-router.get("/get-by-time", getTimeBasePlaylist)
+router.get("/get-by-time", getTimeBasePlaylist);
+
+router.get("/:id", getPlaylistById)
 
 
 

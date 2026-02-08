@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Sun, Moon, Sunset, Coffee, Play, Music, Type } from "lucide-react";
+import {
+  Sun,
+  Moon,
+  Sunset,
+  Coffee,
+  Play,
+  Music,
+  Type,
+  icons,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const TimeBasedSection = () => {
   const [timeState, setTimeState] = useState({
@@ -11,104 +21,52 @@ const TimeBasedSection = () => {
     playlists: [],
   });
   const navigate = useNavigate();
-  useEffect(() => {
-    const hour = new Date().getHours();
-
-    if (hour >= 5 && hour < 12) {
-      setTimeState({
-        greeting: "Good Morning",
-        icon: Coffee,
-        label: "Start your day right",
-        playlists: [
-          {
-            title: "Morning Boost",
-            subtitle: "Energy & Pop",
-            color: "from-orange-400 to-red-500",
-          },
-          {
-            title: "Coffee Jazz",
-            subtitle: "Relaxing Instrumental",
-            color: "from-amber-700 to-orange-900",
-          },
-          {
-            title: "Meditation",
-            subtitle: "Start Calm",
-            color: "from-teal-400 to-emerald-600",
-          },
-        ],
-      });
-    } else if (hour >= 12 && hour < 17) {
-      setTimeState({
-        greeting: "Good Afternoon",
-        icon: Sun,
-        label: "Keep the flow going",
-        playlists: [
-          {
-            title: "Deep Focus",
-            subtitle: "Beats to work to",
-            color: "from-blue-500 to-indigo-600",
-          },
-          {
-            title: "Top Hits",
-            subtitle: "Trending Global",
-            color: "from-pink-500 to-rose-500",
-          },
-          {
-            title: "Lo-Fi Beats",
-            subtitle: "Chill Study",
-            color: "from-violet-500 to-purple-600",
-          },
-        ],
-      });
-    } else if (hour >= 17 && hour < 21) {
-      setTimeState({
-        greeting: "Good Evening",
-        icon: Sunset,
-        label: "Unwind & Relax",
-        playlists: [
-          {
-            title: "Sunset Chill",
-            subtitle: "Acoustic Vibes",
-            color: "from-purple-500 to-indigo-500",
-          },
-          {
-            title: "Workout Mode",
-            subtitle: "High Intensity",
-            color: "from-red-500 to-orange-600",
-          },
-          {
-            title: "Party Starters",
-            subtitle: "Dance & Electronic",
-            color: "from-fuchsia-500 to-pink-600",
-          },
-        ],
-      });
-    } else {
-      setTimeState({
-        greeting: "Good Night",
-        icon: Moon,
-        label: "Sleep tight",
-        playlists: [
-          {
-            title: "Sleep Sounds",
-            subtitle: "Rain & Thunder",
-            color: "from-slate-700 to-slate-900",
-          },
-          {
-            title: "Late Night Drive",
-            subtitle: "Phonk & Trap",
-            color: "from-blue-900 to-black",
-          },
-          {
-            title: "Sad Hours",
-            subtitle: "Slowed + Reverb",
-            color: "from-indigo-900 to-blue-900",
-          },
-        ],
-      });
+  const getIconAndLabel = (category) => {
+    switch (category) {
+      case "morning":
+        return { icon: Coffee, label: "start your day right" };
+      case "afternoon":
+        return { icon: Sun, label: "Keep the flow going" };
+      case "evening":
+        return { icon: Sunset, label: "Unwind & Relax" };
+      case "night":
+        return { icon: Moon, label: "Sleep tight" };
+      default:
+        return { icon: Music, label: "Listen to the best" };
     }
-  }, []);
+  };
 
+  useEffect(() => {
+    const fetchPlaylist = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/timePlaylist/get-by-time",
+        );
+        const { greeting, category, data } = response.data;
+        const mappedPlaylists = data.map((item) => ({
+          _id: item._id,
+          title: item.name,
+          subtitle: item.description,
+          color: item.gradient,
+        }));
+        const { icon, label } = getIconAndLabel(category);
+        setTimeState  ({
+          greeting: greeting,
+          icon: icon,
+          label: label,
+          playlists: mappedPlaylists,
+        });
+      } catch (error) {
+        console.error("Error fetching playlists:", error);
+        setTimeState((prev) => ({
+          ...prev,
+          greeting: "Welcome Back",
+          label: "Library",
+        }));
+      }
+    };
+    fetchPlaylist();
+  }, []);
   const MainIcon = timeState.icon;
 
   return (
@@ -126,7 +84,6 @@ const TimeBasedSection = () => {
             <p className="text-white/40 text-sm">{timeState.label}</p>
           </div>
         </div>
-        {/* 'See all' button for realism */}
         <button className="text-xs text-white/40 hover:text-white uppercase tracking-widest transition-colors">
           See All
         </button>
@@ -135,11 +92,11 @@ const TimeBasedSection = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {timeState.playlists.map((playlist, index) => (
           <motion.div
-            key={index}
+            key={playlist._id||index}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            onClick={() => navigate('/playlist', { state: playlist })}
+            onClick={() => navigate(`/playList/${playlist._id}`, { state: playlist })}
             className="group relative bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 rounded-2xl p-4 cursor-pointer transition-all duration-300">
             {/* 🌟 Glow Effect on Hover (Background Light) */}
             <div
