@@ -7,6 +7,7 @@ const moodHistoryRouter = require("./routers/moodHistory.route");
 const playHistoryRouter = require("./routers/playHistory.route");
 const playlistRouter = require("./routers/playList.route");
 const likeRouter = require("./routers/like.route")
+const timeBaseRouter = require("./routers/timeBasePlaylist.route")
 const app = express();
 // middlewares
 app.use(
@@ -31,5 +32,6 @@ app.use("/api/history", moodHistoryRouter);
 app.use("/api", playHistoryRouter);
 app.use("/api/playlist", playlistRouter );
 app.use("/api/likes", likeRouter);
+app.use("/api/timePlaylist", timeBaseRouter)
 
 module.exports = app;

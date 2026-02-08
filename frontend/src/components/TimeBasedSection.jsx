@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Sun, Moon, Sunset, Coffee, Play, Music } from "lucide-react";
+import { Sun, Moon, Sunset, Coffee, Play, Music, Type } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const TimeBasedSection = () => {
