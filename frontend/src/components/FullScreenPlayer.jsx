@@ -142,7 +142,7 @@ const FullScreenPlayer = ({
           </div>
         </div>
 
-        {/* 🎛️ Controls Glass Panel */}
+        {/*  Controls Glass Panel */}
         <motion.div
           className="w-full max-w-3xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl"
         >

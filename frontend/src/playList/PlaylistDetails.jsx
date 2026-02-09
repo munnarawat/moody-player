@@ -158,12 +158,12 @@ const PlaylistDetails = () => {
         <div className="absolute inset-0 bg-linear-to-b from-transparent to-black" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col md:flex-row   gap-6 p-8 h-full max-w-7xl mx-auto">
+        <div className="relative z-10 flex flex-col items-center sm:flex-row   gap-6 p-8  h-full max-w-7xl mx-auto">
           {/* Cover Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-48 h-48 md:w-60 md:h-60 shadow-2xl shadow-black/50 rounded-xl overflow-hidden shrink-0 bg-white/5">
+            className="w-48 h-48 md:w-60 md:h-60 shadow-2xl shadow-black/50 rounded-xl overflow-hidden shrink-0  bg-white/5">
             {playlist.coverImage ? (
               <img
                 src={playlist.coverImage}
@@ -229,18 +229,18 @@ const PlaylistDetails = () => {
           </motion.div>
 
           {/* Text Info */}
-          <div className="mb-2 px-1">
+          <div className="mb-2 w-full flex gap-2 items-center sm:items-start  flex-col  px-1">
             <span className="text-xs font-bold uppercase tracking-wider text-white/80">
               Public Playlist
             </span>
-            <h1 className="text-4xl md:text-7xl  font-bold mt-2 mb-4 text-white drop-shadow-lg ">
+            <h1 className="text-4xl md:text-7xl  font-bold  text-white drop-shadow-lg ">
               {playlist.name}
             </h1>
-            <p className="text-white/60 text-sm font-medium mb-4 max-w-xl line-clamp-2">
+            <p className="text-white/60 text-sm font-medium  max-w-xl line-clamp-2">
               {playlist.description || "No description provided."}
             </p>
 
-            <div className="flex items-center gap-2 text-sm text-white/80">
+            <div className="flex items-center  gap-2 text-sm text-white/80">
               <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold">
                 {user?.userName?.[0]?.toUpperCase() || "U"}
               </div>
@@ -252,7 +252,7 @@ const PlaylistDetails = () => {
             </div>
             <button
               onClick={handleDeleteClick}
-              className="flex items-center gap-2 mt-1 px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-full transition text-sm font-bold border border-red-500/30">
+              className="flex items-center gap-2 mt-3 px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white rounded-full transition text-sm font-bold border border-red-500/30">
               <Trash2 size={16} /> Delete Playlist
             </button>
           </div>
