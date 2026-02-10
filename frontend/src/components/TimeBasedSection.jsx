@@ -48,6 +48,7 @@ const TimeBasedSection = () => {
           title: item.name,
           subtitle: item.description,
           color: item.gradient,
+          image:item.coverImage
         }));
         const { icon, label } = getIconAndLabel(category);
         setTimeState  ({
@@ -67,8 +68,8 @@ const TimeBasedSection = () => {
     };
     fetchPlaylist();
   }, []);
-  const MainIcon = timeState.icon;
-
+  const MainIcon = timeState.icon;  
+ 
   return (
     <div className="w-full px-4 mt-12 mb-8">
       {/* 👋 Section Header */}
@@ -100,18 +101,18 @@ const TimeBasedSection = () => {
             className="group relative bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/20 rounded-2xl p-4 cursor-pointer transition-all duration-300">
             {/* 🌟 Glow Effect on Hover (Background Light) */}
             <div
-              className={`absolute inset-0 bg-linear-to-br ${playlist.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500 blur-xl`}
+            style={{background:playlist.color}}
+              className='absolute inset-0 bg-linear-to-br ${playlist.color} opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-500 blur-xl'
             />
-
             <div className="flex items-center gap-4 relative z-10">
               {/* 🖼️ Album Art Placeholder (Dynamic Gradient) */}
               <div
-                className={`relative w-20 h-20 rounded-xl bg-linear-to-br ${playlist.color} shadow-lg overflow-hidden group-hover:scale-105 transition-transform duration-300`}>
+              style={{background:playlist.color}}
+                className='relative w-20 h-20 rounded-xl   shadow-lg overflow-hidden group-hover:scale-105 transition-transform duration-300'>
                 {/* Image Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Music size={24} className="text-white/50" />
                 </div>
-
                 {/* ▶️ Play Button Overlay (Visible on Hover) */}
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]">
                   <motion.div
@@ -123,12 +124,12 @@ const TimeBasedSection = () => {
                 </div>
               </div>
               {/* 📝 Text Info */}
-              <div className="flex flex-col justify-center">
+              <div className="flex flex-col  justify-center">
                 <h3 className="text-white font-bold text-lg leading-tight group-hover:text-indigo-300 transition-colors">
                   {playlist.title}
                 </h3>
                 <p className="text-white/40 text-xs mt-1 font-medium tracking-wide uppercase">
-                  {playlist.subtitle}
+                  {playlist.subtitle.slice(0,30)}...
                 </p>
                 {/* Fake 'Likes' count to make it look real */}
                 <div className="flex items-center gap-1 mt-2">
