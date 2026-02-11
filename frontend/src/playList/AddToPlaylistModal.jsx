@@ -18,7 +18,7 @@ const AddToPlaylistModal = ({isOpen, onClose, songId}) => {
   const fetchPlaylist = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await axios.get("http://localhost:3000/api/playlist", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/playlist`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,7 +34,7 @@ const AddToPlaylistModal = ({isOpen, onClose, songId}) => {
     const token = localStorage.getItem("token");
     try {
       await axios.post(
-        "http://localhost:3000/api/playlist/add-song",
+        `${import.meta.env.VITE_API_URL}/api/playlist/add-song`,
         {
           playlistId,
           songId,

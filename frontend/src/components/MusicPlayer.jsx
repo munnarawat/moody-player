@@ -26,7 +26,7 @@ import FullScreenPlayer from "./FullScreenPlayer";
 const MusicPlayer = () => {
   const dispatch = useDispatch();
   const { currentSong, isPlaying, isShuffle, repeatMode } = useSelector(
-    (state) => state.song
+    (state) => state.song,
   );
   const { user } = useSelector((state) => state.auth);
   const audioRef = useRef(null);
@@ -65,9 +65,7 @@ const MusicPlayer = () => {
       audioRef.current.src = currentSong.audioUrl;
       audioRef.current.load();
       if (isPlaying) {
-        audioRef.current
-          .play()
-          .catch((e) => console.log("Playback error:", e));
+        audioRef.current.play().catch((e) => console.log("Playback error:", e));
       }
     }
   }, [currentSong]);
@@ -75,9 +73,7 @@ const MusicPlayer = () => {
   // Handle Play/Pause
   useEffect(() => {
     if (isPlaying) {
-      audioRef.current
-        .play()
-        .catch((e) => console.log("Play interrupted", e));
+      audioRef.current.play().catch((e) => console.log("Play interrupted", e));
     } else {
       audioRef.current.pause();
     }
@@ -153,15 +149,13 @@ const MusicPlayer = () => {
         initial={{ y: 150, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
-        className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-2 sm:px-6 sm:pb-6 pointer-events-none"
-      >
+        className="relative z-50 px-2 pb-2 sm:px-6 sm:pb-6 pointer-events-none">
         {/* Main Floating Capsule */}
         <div
           onClick={() => setIsFullScreen(true)}
           className="pointer-events-auto w-full max-w-5xl mx-auto h-20 sm:h-24 bg-black/80 backdrop-blur-2xl border border-white/10 rounded-4xl flex items-center justify-between px-4 sm:px-8 shadow-[0_8px_32px_rgba(0,0,0,0.5)]  overflow-hidden relative group cursor-pointer"
           onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+          onMouseLeave={() => setIsHovered(false)}>
           {/* Glow Effect */}
           <div className="absolute inset-0 bg-linear-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 pointer-events-none" />
 
@@ -171,8 +165,7 @@ const MusicPlayer = () => {
             {/* Rotating Art */}
             <motion.div
               className="relative w-12 h-12 sm:w-16 sm:h-16 shrink-0"
-              style={{ perspective: "1000px" }}
-            >
+              style={{ perspective: "1000px" }}>
               <motion.img
                 src={currentSong.imageUrl}
                 alt="Art"
@@ -197,8 +190,7 @@ const MusicPlayer = () => {
             {/* Liked Button - Hidden on very small screens if needed, mostly fine */}
             <div
               className="scale-90 sm:scale-100 shrink-0"
-              onClick={(e) => e.stopPropagation()}
-            >
+              onClick={(e) => e.stopPropagation()}>
               <LikedButton
                 songId={currentSong._id}
                 isAlreadyLiked={isSongLiked}
@@ -221,8 +213,7 @@ const MusicPlayer = () => {
                     ? "text-indigo-400"
                     : "text-zinc-500 hover:text-white"
                 }`}
-                title="Shuffle"
-              >
+                title="Shuffle">
                 <Shuffle size={16} />
                 {isShuffle && (
                   <div className="h-1 w-1 bg-indigo-400 rounded-full mx-auto mt-0.5" />
@@ -232,8 +223,7 @@ const MusicPlayer = () => {
               {/* Prev - Hidden on Mobile */}
               <button
                 onClick={(e) => handleAction(e, handlePrev)}
-                className="hidden md:block text-zinc-300 hover:text-white hover:scale-110 transition-all"
-              >
+                className="hidden md:block text-zinc-300 hover:text-white hover:scale-110 transition-all">
                 <SkipBack size={22} className="fill-current" />
               </button>
 
@@ -241,8 +231,7 @@ const MusicPlayer = () => {
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={(e) => handleAction(e, handleTogglePlay)}
-                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] hover:scale-105 transition-all shrink-0"
-              >
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white text-black flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] hover:scale-105 transition-all shrink-0">
                 {isPlaying ? (
                   <Pause size={20} className="fill-black" />
                 ) : (
@@ -253,8 +242,7 @@ const MusicPlayer = () => {
               {/* Next Button */}
               <button
                 onClick={(e) => handleAction(e, handleNext)}
-                className="text-zinc-300 hover:text-white hover:scale-110 transition-all"
-              >
+                className="text-zinc-300 hover:text-white hover:scale-110 transition-all">
                 <SkipForward size={22} className="fill-current" />
               </button>
 
@@ -266,8 +254,7 @@ const MusicPlayer = () => {
                     ? "text-indigo-400"
                     : "text-zinc-500 hover:text-white"
                 }`}
-                title="Repeat"
-              >
+                title="Repeat">
                 {repeatMode === "one" ? (
                   <Repeat1 size={16} />
                 ) : (
@@ -282,21 +269,18 @@ const MusicPlayer = () => {
             {/* Progress Bar - Hidden on Mobile to save space */}
             <div
               className="hidden md:flex w-full items-center gap-2 text-[10px] sm:text-xs text-white/40 font-mono"
-              onClick={(e) => e.stopPropagation()}
-            >
+              onClick={(e) => e.stopPropagation()}>
               <span className="inline w-8 text-right">
                 {formatTime(currentTime)}
               </span>
 
               <div
                 className="relative flex-1 h-1.5 bg-white/10 rounded-full cursor-pointer group py-1"
-                onClick={handleSeek}
-              >
+                onClick={handleSeek}>
                 <div className="absolute top-1/2 -translate-y-1/2 left-0 h-1.5 w-full rounded-full bg-white/5" />
                 <div
                   className="absolute top-1/2 -translate-y-1/2 left-0 h-1.5 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full group-hover:from-indigo-400 group-hover:to-pink-400 transition-all"
-                  style={{ width: `${progress}%` }}
-                >
+                  style={{ width: `${progress}%` }}>
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)] opacity-0 group-hover:opacity-100 transition-opacity scale-150" />
                 </div>
               </div>
@@ -311,12 +295,10 @@ const MusicPlayer = () => {
           <div className="hidden md:flex items-center justify-end gap-3 w-1/3 min-w-0">
             <div
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-2 group/vol"
-            >
+              className="flex items-center gap-2 group/vol">
               <button
                 onClick={() => setVolume(volume === 0 ? 1 : 0)}
-                className="text-white/60 hover:text-white"
-              >
+                className="text-white/60 hover:text-white">
                 {volume === 0 ? (
                   <VolumeX size={18} />
                 ) : volume < 0.5 ? (
@@ -328,8 +310,7 @@ const MusicPlayer = () => {
               {/* Custom Volume Slider */}
               <div
                 className="w-16 h-1 bg-white/10 rounded-full cursor-pointer relative overflow-hidden"
-                onClick={handleVolumeSeek}
-              >
+                onClick={handleVolumeSeek}>
                 <div
                   className="absolute top-0 left-0 h-full bg-white rounded-full group-hover/vol:bg-indigo-400 transition-colors"
                   style={{ width: `${volume * 100}%` }}

@@ -30,7 +30,7 @@ const Home = () => {
   const fetchSong = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:3000/api/songs");
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/songs`);
 
       const fetchedSongs = response.data.song || [];
 
@@ -63,7 +63,7 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token");
       const songRes = await axios.get(
-        `http://localhost:3000/api/songs/mood/${mood}`,
+        `${import.meta.env.VITE_API_URL}/api/songs/mood/${mood}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -73,7 +73,7 @@ const Home = () => {
       if (token) {
         try {
           await axios.post(
-            "http://localhost:3000/api/history/mood",
+            `${import.meta.env.VITE_API_URL}/api/history/mood`,
             { mood: mood, source: source },
             { headers: { Authorization: `Bearer ${token}` } }
           );
@@ -99,8 +99,6 @@ const Home = () => {
   const scrollToCamera = () => {
     cameraSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  // ❌ Duplicate useEffect hata diya (jo yahan pehle tha)
 
   const handleSongClicked = (song) => {
     dispatch(playSong(song));

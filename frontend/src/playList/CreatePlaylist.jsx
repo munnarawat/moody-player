@@ -39,8 +39,7 @@ const CreatePlaylist = ({ isOpen, isClose, refreshPlaylists }) => {
     try {
       setLoading(true);
       const formData = new FormData();
-      
-      // 🔥 FIX 1: Name append karna zaroori hai!
+    
       formData.append("name", data.name); 
       formData.append("description", data.description);
       
@@ -48,7 +47,7 @@ const CreatePlaylist = ({ isOpen, isClose, refreshPlaylists }) => {
         formData.append("coverImage", data.coverImage[0]);
       }
 
-      await axios.post("http://localhost:3000/api/playlist", formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/playlist`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",

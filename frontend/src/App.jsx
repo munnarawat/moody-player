@@ -22,7 +22,7 @@ const App = () => {
         return;
       }
       try {
-        const response = await axios.get("http://localhost:3000/api/auth/", {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

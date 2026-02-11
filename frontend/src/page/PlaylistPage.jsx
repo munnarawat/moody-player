@@ -36,11 +36,11 @@ const PlaylistPage = () => {
     const fetchDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/timePlaylist/${id}`,
+          `${import.meta.env.VITE_API_URL}/api/timePlaylist/${id}`,
         );
         setPlaylistData(response.data.data);
         setSongs(response.data.data.songs || []);
-        setLoading(true);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching playlist details:", error);
         setLoading(false);

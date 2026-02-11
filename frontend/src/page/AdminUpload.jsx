@@ -45,7 +45,7 @@ const AdminUpload = () => {
       if (data.image[0]) formData.append("image", data.image[0]);
       //   api call
 
-      await axios.post("http://localhost:3000/api/songs", formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/songs`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

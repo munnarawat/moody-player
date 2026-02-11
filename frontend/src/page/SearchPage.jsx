@@ -30,7 +30,7 @@ const SearchPage = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:3000/api/songs/search?query=${searchTerm}`
+        `${import.meta.env.VITE_API_URL}/api/songs/search?query=${searchTerm}`
       );
       setSongs(res.data.songs || []);
     } catch (error) {

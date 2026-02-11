@@ -19,7 +19,7 @@ const PlayList = () => {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:3000/api/playlist", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/playlist`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +39,7 @@ const PlayList = () => {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:3000/api/likes", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/likes`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

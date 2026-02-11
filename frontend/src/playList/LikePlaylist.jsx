@@ -33,7 +33,7 @@ const LikePlaylist = () => {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:3000/api/likes", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/likes`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

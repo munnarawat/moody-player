@@ -35,7 +35,7 @@ const Register = () => {
      console.log("PAYLOAD 👉", payload);
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
          payload,{
           headers:{
             "Content-Type":"application/json",

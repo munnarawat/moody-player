@@ -24,7 +24,7 @@ const LikedButton = ({ songId,isAlreadyLiked }) => {
       setLiked(newStatus);
       dispatch(updateUserLikedSongs({songId, isLiked:newStatus}))
       const res = await axios.post(
-        "http://localhost:3000/api/likes/toggle",
+        `${import.meta.env.VITE_API_URL}/api/likes/toggle`,
         { songId },
         {
           headers: {

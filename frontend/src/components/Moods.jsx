@@ -30,7 +30,7 @@ const Moods = () => {
   const fetchMoodHistory = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.get("http://localhost:3000/api/history/mood", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/history/mood`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setMood(res.data.history || []);

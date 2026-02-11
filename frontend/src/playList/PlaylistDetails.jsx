@@ -37,7 +37,7 @@ const PlaylistDetails = () => {
       const token = localStorage.getItem("token");
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/playlist/${id}`,
+          `${import.meta.env.VITE_API_URL}/api/playlist/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
@@ -75,7 +75,7 @@ const PlaylistDetails = () => {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/playlist/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/playlist/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,7 +97,7 @@ const PlaylistDetails = () => {
     const token = localStorage.getItem("token");
     try {
       const res = await axios.put(
-        "http://localhost:3000/api/playlist/remove-song",
+        `${import.meta.env.VITE_API_URL}/api/playlist/remove-song`,
         { playlistId: id, songId },
         { headers: { Authorization: `Bearer ${token}` } },
       );

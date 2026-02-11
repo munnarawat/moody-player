@@ -40,7 +40,7 @@ const TimeBasedSection = () => {
     const fetchPlaylist = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/timePlaylist/get-by-time",
+          `${import.meta.env.VITE_API_URL}/api/timePlaylist/get-by-time`,
         );
         const { greeting, category, data } = response.data;
         const mappedPlaylists = data.map((item) => ({
