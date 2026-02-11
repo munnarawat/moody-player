@@ -10,6 +10,7 @@ const likeRouter = require("./routers/like.route")
 const timeBaseRouter = require("./routers/timeBasePlaylist.route")
 const app = express();
 // middlewares
+app.set("trust proxy", 1); // trust first proxy
 app.use(
   cors({
     origin:[ "http://localhost:5173",
@@ -21,6 +22,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

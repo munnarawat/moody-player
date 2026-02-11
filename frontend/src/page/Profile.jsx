@@ -64,7 +64,7 @@ const Profile = () => {
           {/* like song stat */}
           <div
             className="bg-zinc-900/50 border border-white/5 p-5 rounded-2xl flex flex-col items-center justify-center hover:bg-white/5 transition-colors group cursor-pointer"
-            onClick={() => navigate("/playlist/likes")}>
+            onClick={() => navigate("/library/likes")}>
             <Heart
               className="mb-2 text-pink-500 group-hover:scale-110 transition-transform"
               size={28}
