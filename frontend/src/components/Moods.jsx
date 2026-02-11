@@ -183,8 +183,7 @@ const Moods = () => {
               <Calendar size={18} className="text-indigo-400" /> Recent History
             </h3>
           </div>
-
-          <div className="overflow-y-auto p-4 space-y-3 custom-scroll">
+          <div data-lenis-prevent className="overflow-y-auto p-4 space-y-3 custom-scroll">
             {mood.length === 0 ? (
               <div className="text-center text-white/30 py-10">
                 No mood history found!
