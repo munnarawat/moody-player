@@ -14,7 +14,7 @@ app.set("trust proxy", 1); // trust first proxy
 app.use(
   cors({
     origin:[ "http://localhost:5173",
-      'http://192.168.1.25:5173'
+      "https://moody-player-sandy.vercel.app"
     ],
   
     credentials: true,
